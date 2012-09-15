@@ -22,8 +22,17 @@ my ($stem) = fileparse($fn, qw(.mp3 .wav));
 my $split_fn = "$splitdir/$stem.txt";
 my $sub_fn = "$subdir/$stem.sub.js";
 
-unless (-e $split_fn) {
-    system(qq(find-audio-splits.pl --outdir "$splitdir" "$fn"));
+if (-e $sub_fn) {
+    print STDERR "File exists: $sub_fn\n";
+    exit(1);
+}
+
+if (-e $split_fn) {
+    print STDERR "$split_fn exists\n";
+}
+else {
+    print STDERR "creating $split_fn\n";
+    system(qq(find-audio-splits.pl --splitdir "$splitdir" "$fn"));
 }
 
 open my $split_fh, '<', $split_fn or die "Couldn't open $split_fn: $!";
@@ -47,11 +56,11 @@ while (<$split_fh>) {
     chomp;
     $chunk_fn = "$chunkdir/chunk$i.wav";
     print STDERR "($i) $fn => $chunk_fn $prev .. $_\n";
-    system qq{sox "$fn" "$chunk_fn" "trim" "$prev" "=$_"};
+    system qq{sox "$fn" --channels 1 "$chunk_fn" trim "$prev" "=$_" mixer};
 } continue {
     $prev = $_;
     $i++;
 }
 $chunk_fn = "$chunkdir/chunk$i.wav";
 print STDERR "($i) $fn => $chunk_fn $prev .. END\n";
-system qq{sox "$fn" "$chunk_fn" "trim" "$prev"};
+system qq{sox "$fn" --channels 1 "$chunk_fn" "trim" "$prev" mixer};
