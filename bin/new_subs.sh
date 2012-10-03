@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if echo "$*" | grep -q '--from-audio'; then
+if echo "$*" | grep -q -- '--from-audio'; then
     export HCOPY_FROM_AUDIO=1
 fi
 
