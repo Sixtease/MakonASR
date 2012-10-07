@@ -11,12 +11,15 @@ export EV_train_transcription="DATA/transcription/train.mlf"
 export EV_LM="DATA/LM/bg.lat"
 export EV_wordlist_test_phonet="DATA/wordlist/wl-test-phonet"
 export EV_tree_hed="DATA/tree.hed"
+export EV_triphone_tree="DATA/triphone-tree"
 
 export EV_test_transcription="DATA/transcription/test.mlf"
 export EV_test_mfcc="$EV_train_mfcc"
 
 export EV_use_triphones='1'
 export EV_min_mixtures=8
+
+export EV_HERest_p=4
 
 export EV_HVite_p='8.0'
 export EV_HVite_s='6.0'
@@ -27,6 +30,7 @@ export EV_iter2=2
 export EV_iter3=2
 export EV_iter4=3
 
+export EV_thread_cnt=2
 export EV_heldout_ratio=19
 
 export EV_corpus="DATA/corpus"
