@@ -12,14 +12,26 @@ if ($out_fn) {
 }
 
 while (<>) {
+    chomp;
+    
+    # non-words
     if (/[^\w\s]/) {
-        chomp;
         print $_, (' ' x 7), "sp\n";
         next
     }
-    chomp;
-    print;
-    print(' ' x 7);
+    
+    my $left_side = $_ . (' ' x 7);
+    
+    # dictionary-based
+    if (my $pronunciations = special_case()) {
+        for my $variant (@$pronunciations) {
+            print $left_side;
+            print $variant, "\n";
+        }
+        next
+    }
+    
+    print $left_side;
     init();
     prepis();
     tr/[A-Z]/[a-z]/;
@@ -28,6 +40,29 @@ while (<>) {
     add_sp();
     print;
     print "\n";
+}
+
+sub special_case {
+    my %dict = (
+        BEZ  => ['b e s', 'b e z', 'b e s sp'],
+        DO   => ['d o', 'd o sp'],
+        K    => ['k'],
+        NA   => ['n a', 'n a sp'],
+        NAD  => ['n a t', 'n a d', 'n a t sp'],
+        O    => ['o', 'o sp'],
+        OD   => ['o t', 'o d', 'o t sp'],
+        PO   => ['p o', 'p o sp'],
+        POD  => ['p o t', 'p o d', 'p o t sp'],
+        PRO  => ['p r o', 'p r o sp'],
+        PŘED => ['p rsh e t', 'p rsh e d', 'p rsh e t sp'],
+        PŘI  => ['p rsh i', 'p rsh i sp'],
+        S    => ['s'],
+        U    => ['u', 'u sp'],
+        V    => ['f', 'v' ],
+        Z    => ['s', 'z'],
+        ZA   => ['z a', 'z a sp'],
+    );
+    return $dict{$_}
 }
 
 sub init {
