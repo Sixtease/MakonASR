@@ -25,10 +25,12 @@ export EV_HVite_p='8.0'
 export EV_HVite_s='6.0'
 export EV_HVite_t='150.0'
 
-export EV_iter1=2
-export EV_iter2=2
-export EV_iter3=2
-export EV_iter4=3
+export EV_iter_init=2
+export EV_iter_sp=2
+export EV_iter_align=2
+export EV_iter_var=2
+export EV_iter_triphones=3
+export EV_iter_mixtures=4
 
 export EV_thread_cnt=2
 export EV_heldout_ratio=19
