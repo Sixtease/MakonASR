@@ -3,66 +3,35 @@
 use strict;
 use warnings;
 use utf8;
-use open qw{:std :utf8};
+use Encode;
+
+my $enc = $ENV{EV_encoding} || 'UTF-8';
 
 my $out_fn = pop @ARGV;
 if ($out_fn) {
     close STDOUT;
-    open STDOUT, '>:utf8', $out_fn or die "Couldn't open '$out_fn': $!";
+    open STDOUT, '>', $out_fn or die "Couldn't open '$out_fn': $!";
 }
 
 while (<>) {
-    chomp;
-    
-    # non-words
-    if (/[^\w\s]/) {
-        print $_, (' ' x 7), "sp\n";
-        next
-    }
-    
-    my $left_side = $_ . (' ' x 7);
-    
-    # dictionary-based
-    if (my $pronunciations = special_case()) {
-        for my $variant (@$pronunciations) {
-            print $left_side;
-            print $variant, "\n";
+    for (decode($enc, $_)) {
+        if (/[^\w\s]/) {
+            chomp;
+            print encode($enc, $_), (' ' x 7), "sp\n";
+            next
         }
-        next
+        chomp;
+        print encode($enc, $_);
+        print(' ' x 7);
+        init();
+        prepis();
+        tr/[A-Z]/[a-z]/;
+        prague2pilsen();
+        infreq();
+        add_sp();
+        print encode($enc, $_);
+        print "\n";
     }
-    
-    print $left_side;
-    init();
-    prepis();
-    tr/[A-Z]/[a-z]/;
-    prague2pilsen();
-    infreq();
-    add_sp();
-    print;
-    print "\n";
-}
-
-sub special_case {
-    my %dict = (
-        BEZ  => ['b e s', 'b e z', 'b e s sp'],
-        DO   => ['d o', 'd o sp'],
-        K    => ['k'],
-        NA   => ['n a', 'n a sp'],
-        NAD  => ['n a t', 'n a d', 'n a t sp'],
-        O    => ['o', 'o sp'],
-        OD   => ['o t', 'o d', 'o t sp'],
-        PO   => ['p o', 'p o sp'],
-        POD  => ['p o t', 'p o d', 'p o t sp'],
-        PRO  => ['p r o', 'p r o sp'],
-        PŘED => ['p rsh e t', 'p rsh e d', 'p rsh e t sp'],
-        PŘI  => ['p rsh i', 'p rsh i sp'],
-        S    => ['s'],
-        U    => ['u', 'u sp'],
-        V    => ['f', 'v' ],
-        Z    => ['s', 'z'],
-        ZA   => ['z a', 'z a sp'],
-    );
-    return $dict{$_}
 }
 
 sub init {
@@ -98,6 +67,7 @@ sub init {
     s/DISP/DYSP/g;
     s/DIST/DYST/g;
     s/DIVIDE/DYVIDE/g;
+    s/^DOUČ/DO!UČ/g;
     s/DUKTI/DUKTY/g;
     s/EDIC/EDYC/g;
     s/ERROR/EROR/g;
@@ -137,6 +107,7 @@ sub init {
     s/MATI/MATY/g;
     s/MANIP/MANYP/g;
     s/MODERNI/MODERNY/g;
+    s/^NAU/NA!U/g;
     s/^NE/NE!/g;
     s/^ODD/OD!D/g;
     s/^ODT/OT!T/g;
@@ -150,6 +121,7 @@ sub init {
     s/^PODT/POT!T/g;
     s/POLITI/POLITY/g;
     s/POZIT/POZYT/g;
+    s/^POUČ/PO!UČ/g;
     s/^POULI/PO!ULI/g;
     s/PRIVATI/PRIVATY/g;
     s/PROSTITU/PROSTYTU/g;
@@ -187,6 +159,7 @@ sub init {
     s/UNIVER/UNYVER/g;
     s/VENTI/VENTY/g;
     s/VERTIK/VERTYK/g;
+    s/^ZAU/ZA!U/g;
 }
 
 sub prepis {
@@ -362,8 +335,8 @@ converts Czech text in CAPITALS in iso-latin-2 to Czech phonetic alphabet in
 iso-latin-2. All input files will be concatenated into the output file. If no
 input files are specified, reads from STDIN.
 
-If you want the script to operate in another encoding, just search for
-iso-8859-2 and change it to utf8 or whatever you like. If you want to use
+If you want the script to operate in another encoding, set the EV_encoding
+environment variable to the desired encoding. If you want to use
 the Prague-style transliteration (sz instead of sh), just comment out the call
 to prague2pilsen function.
 
