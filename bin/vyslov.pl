@@ -4,6 +4,9 @@ use strict;
 use warnings;
 use utf8;
 use Encode;
+use DBI;
+
+my $dbh = DBI->connect('dbi:Pg:dbname=MakonFM','sixtease','',{AutoCommit=>0});
 
 my $enc = $ENV{EV_encoding} || 'UTF-8';
 
@@ -13,6 +16,7 @@ if ($out_fn) {
     open STDOUT, '>', $out_fn or die "Couldn't open '$out_fn': $!";
 }
 
+LINE:
 while (<>) {
     for (decode($enc, $_)) {
         if (/[^\w\s]/) {
@@ -21,6 +25,12 @@ while (<>) {
             next
         }
         chomp;
+        if (my @spec = specialcase()) {
+            for my $pron (@spec) {
+                print encode($enc, $_), (' ' x 7), $pron, "\n";
+            }
+            next LINE;
+        }
         print encode($enc, $_);
         print(' ' x 7);
         init();
@@ -32,6 +42,11 @@ while (<>) {
         print encode($enc, $_);
         print "\n";
     }
+}
+
+sub specialcase {
+    my $ref = $dbh->selectcol_arrayref('SELECT pron FROM dict WHERE form=?', {}, $_);
+    return @$ref
 }
 
 sub init {
@@ -314,8 +329,6 @@ sub infreq {
 }
 
 sub add_sp {
-    # skip prepositions
-    return if /^(?:p (?:r(?:z (?:e t|i)| o)|o(?: t)?)|n a(?: t)?|[kosuf]|o t|d o|b e s|z a) $/;
     s/ ?$/ sp/;
 }
 
