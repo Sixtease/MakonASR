@@ -73,7 +73,7 @@ sub init {
     s/ERROR/EROR/g;
     s/^EX([AEIOUÁÉÍÓÚŮ])/EGZ$1/g;
     s/ELEKTRONI/ELEKTRONY/g;
-    s/ENERGETIK/ENERGETYK/g;
+    s/ENERGETI/ENERGETY/g;
     s/ETIK/ETYK/g;
     s/FEMINI/FEMINY/g;
     s/FINIŠ/FINYŠ/g;
@@ -81,6 +81,7 @@ sub init {
     s/GENETI/GENETY/g;
     s/GIENI/GIENY/g;
     s/IMUNI/IMUNY/g;
+    s/^INDI(.)/INDY$1/g;
     s/INDIV/INDYV/g;
     s/INICI/INYCI/g;
     s/INVESTI/INVESTY/g;
