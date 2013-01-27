@@ -29,7 +29,6 @@ while (<>) {
             for my $pron (@spec) {
                 print encode($enc, $_), (' ' x 7), $pron, "\n";
             }
-            next LINE;
         }
         print encode($enc, $_);
         print(' ' x 7);
@@ -329,7 +328,7 @@ sub infreq {
 }
 
 sub add_sp {
-    s/ ?$/ sp/;
+    s/ *$/ sp/;
 }
 
 __END__
