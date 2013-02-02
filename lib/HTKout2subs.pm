@@ -37,6 +37,9 @@ sub get_subs {
         }
         if (my ($start, $word) = /^(\d+)(?:\s+\S+){3}\s+(\S+)/) {
             my %cur;
+            if ($word eq '<UNK>') {
+                next HTKLINE
+            }
             if ($word eq '!!UNK') {
                 next HTKLINE
             }
