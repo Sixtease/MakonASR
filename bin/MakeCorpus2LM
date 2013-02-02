@@ -22,7 +22,7 @@ data/LM/bg.arpa: $(EV_corpus) data/wordlist/WORDLIST-test
 	ngram-count -order 2 -vocab data/wordlist/WORDLIST-test -text "$(EV_corpus)" -lm data/LM/bg.arpa #-unk -map-unk '!!UNK'
 
 $(EV_wordlist_test_phonet): temp/unigram.csv
-	head -n "$(EV_vocab_size)" < temp/unigram.csv | iconv -f iso-8859-2 -t utf8 | vyslov.pl | iconv -f utf8 -t iso-8859-2 > "$(EV_wordlist_test_phonet)"
+	head -n "$(EV_vocab_size)" < temp/unigram.csv | vyslov.pl "$(EV_wordlist_test_phonet)"
 
 temp/unigram.csv: $(EV_corpus)
 	mkdir -p temp
