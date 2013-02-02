@@ -1,14 +1,18 @@
 #!/bin/bash
 
-export PATH="bin:/home/sixtease/git/Evadevi/bin:/home/sixtease/programs/lmhtk/bin:/home/sixtease/share/install/srilm/bin:/home/sixtease/share/install/srilm/bin/i686:$PATH"
+export PATH="bin:/home/sixtease/git/Evadevi/bin:/home/sixtease/programs/lmhtk/bin:/home/sixtease/share/install/srilm/bin:/home/sixtease/share/install/srilm/bin/i686:/home/sixtease/share/install/julius/4.2.1/julius-4.2.1-linuxbin/bin:$PATH"
 export EV_homedir=~/git/Evadevi/
 export EV_workdir=temp/
 export EV_outdir=hmms/
+
+export EV_encoding='iso-8859-2'
 
 export EV_train_mfcc="DATA/mfcc"
 export EV_wordlist_train_phonet="DATA/wordlist/wl-train-phonet"
 export EV_train_transcription="DATA/transcription/train.mlf"
 export EV_LM="DATA/LM/bg.lat"
+export EV_LMf="DATA/LM/tg.arpa"
+export EV_LMb="DATA/LM/bgb.arpa"
 export EV_wordlist_test_phonet="DATA/wordlist/wl-test-phonet"
 export EV_tree_hed="DATA/tree.hed"
 export EV_triphone_tree="DATA/triphone-tree"

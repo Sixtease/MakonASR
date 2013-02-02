@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 use utf8;
-use open qw(:std :utf8);
 
 <> eq "#!MLF!#\n" or die "first line was not a MLF header";
 
