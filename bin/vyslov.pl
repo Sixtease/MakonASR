@@ -19,18 +19,18 @@ if ($out_fn) {
 LINE:
 while (<>) {
     for (decode($enc, $_)) {
+        chomp;
+        my $writ = $_;
         if (/[^\w\s]/) {
-            chomp;
-            print encode($enc, $_), (' ' x 7), "sp\n";
+            print encode($enc, $writ), (' ' x 7), "sil\n";
             next
         }
-        chomp;
         if (my @spec = specialcase()) {
             for my $pron (@spec) {
-                print encode($enc, $_), (' ' x 7), $pron, "\n";
+                print encode($enc, $writ), (' ' x 7), $pron, "\n";
             }
         }
-        print encode($enc, $_);
+        print encode($enc, $writ);
         print(' ' x 7);
         init();
         prepis();
@@ -40,6 +40,7 @@ while (<>) {
         add_sp();
         print encode($enc, $_);
         print "\n";
+        print_variants($writ);
     }
 }
 
@@ -323,12 +324,20 @@ sub infreq {
     s/dz/c/g;
     s/dzh/ch/g;
     s/ew/e u/g;
+    s/aw/a u/g; # XXX: sundat, az bude vic aw'ek v trenovacich datech
     s/mg/m/g;
     s/oo/o/g;
 }
 
 sub add_sp {
     s/ *$/ sp/;
+}
+
+sub print_variants {
+    my ($writ) = @_;
+    if (/^o /) {
+        print encode($enc, "$writ       v $_\n");
+    }
 }
 
 __END__
