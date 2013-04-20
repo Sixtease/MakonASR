@@ -1,28 +1,36 @@
-EV_LM?=data/LM/bg.lat
+EV_LM?=DATA/LM/bg.lat
+EV_LMf?=DATA/LM/tg.arpa
+EV_LMb?=DATA/LM/tgb.arpa
 EV_vocab_size?=1700
+EV_wl_test?=DATA/wordlist/WORDLIST-test
 
 all: $(EV_LM) $(EV_wordlist_test_phonet)
 
-$(EV_LM): data/LM/bg.arpa data/wordlist/WORDLIST-test
+$(EV_LM): DATA/LM/bg.arpa $(EV_wl_test)
 	mkdir -p `dirname "$(EV_LM)"`
-	LANG=C H HBuild -s '<s>' '</s>' -n data/LM/bg.arpa data/wordlist/WORDLIST-test "$(EV_LM)"
+	LANG=C H HBuild -s '<s>' '</s>' -n DATA/LM/bg.arpa "$(EV_wl_test)" "$(EV_LM)"
 
-data/wordlist/WORDLIST-test: $(EV_wordlist_test_phonet)
-	mkdir -p data/wordlist
-	echo '!!UNK' > data/wordlist/WORDLIST-test
-	cut -d ' ' -f 1 < "$(EV_wordlist_test_phonet)" >> data/wordlist/WORDLIST-test
+$(EV_wordlist_test_phonet): $(EV_wl_test)
+	mkdir -p "`dirname $(EV_wordlist_test_phonet)`"
+	vyslov.pl < "$(EV_wl_test)" > "$(EV_wordlist_test_phonet)"
 
-data/LM/bg.arpa: $(EV_corpus) data/wordlist/WORDLIST-test
-	mkdir -p data/LM
+DATA/LM/bg.arpa: $(EV_corpus) $(EV_wl_test)
+	mkdir -p DATA/LM
 	#mkdir -p temp/LM/counts
 	#echo "$(EV_corpus)" > temp/LM/filelist
 	#make-batch-counts temp/LM/filelist 10 cat temp/LM/counts
 	#merge-batch-counts temp/LM/counts
-	#make-big-lm -read temp/LM/counts/filelist-1.ngrams.gz -lm data/LM/bg.arpa -unk -map-unk '!!UNK' -order 2 -vocab data/wordlist/WORDLIST-test
-	ngram-count -order 2 -vocab data/wordlist/WORDLIST-test -text "$(EV_corpus)" -lm data/LM/bg.arpa #-unk -map-unk '!!UNK'
+	#make-big-lm -read temp/LM/counts/filelist-1.ngrams.gz -lm DATA/LM/bg.arpa -unk -map-unk '!!UNK' -order 2 -vocab "$(EV_wl_test)"
+	ngram-count -order 2 -vocab "$(EV_wl_test)" -text "$(EV_corpus)"  -lm DATA/LM/bg.arpa  #-unk -map-unk '!!UNK'
 
-$(EV_wordlist_test_phonet): temp/unigram.csv
-	head -n "$(EV_vocab_size)" < temp/unigram.csv | vyslov.pl "$(EV_wordlist_test_phonet)"
+$(EV_LMf) $(EV_LMb): $(EV_corpus) $(EV_corpus)b $(EV_wl_test)
+	mkdir -p "`dirname $(EV_LMf)`"
+	ngram-count -order 3 -vocab "$(EV_wl_test)" -text "$(EV_corpus)"  -lm "$(EV_LMf)" #-unk -map-unk '!!UNK'
+	ngram-count -order 3 -vocab "$(EV_wl_test)" -text "$(EV_corpus)b" -lm "$(EV_LMb)" #-unk -map-unk '!!UNK'
+
+$(EV_wl_test): temp/unigram.csv
+	mkdir -p "`dirname $(EV_wl_test)`"
+	head -n "$(EV_vocab_size)" < temp/unigram.csv > "$(EV_wl_test)"
 
 temp/unigram.csv: $(EV_corpus)
 	mkdir -p temp
