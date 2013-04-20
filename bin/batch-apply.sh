@@ -10,7 +10,7 @@ ls "$@" | while read f; do
     stem=`basename "$f" | sed 's/\.sub\.js$//'`
     export TEMPDIR="$WORKDIR/$stem"
     export CHUNKDIR="$TEMPDIR/chunks"
-    if [ mkdir "$TEMPDIR" 2>/dev/null ]; then echo "taking $stem" ; else echo "skipping $stem"; continue; fi
+    if mkdir "$TEMPDIR" 2>/dev/null; then echo "taking $stem" ; else echo "skipping $stem"; continue; fi
     mkdir "$CHUNKDIR"
     split-by-subs.pl "$f" | split-mfcc.pl
 #    if [ -e "$RECOUTDIR/recout-$stem" ]; then : ; else
