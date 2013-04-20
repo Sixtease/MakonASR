@@ -12,6 +12,8 @@ ls "$@" | while read f; do
     if [ -e "$SUBDIR/$stem.sub.js" ]; then
         echo "Sub exists: $stem ($SUBDIR/$stem.sub.js)"
         continue
+    else
+        touch "$SUBDIR/$stem.sub.js"
     fi
     split-by-subs.pl "$f" | split-mfcc.pl
 #    if [ -e "$RECOUTDIR/recout-$stem" ]; then : ; else
