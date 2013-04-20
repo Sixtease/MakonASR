@@ -25,10 +25,11 @@ for my $fn (@ARGV) {
     
     # pad end with a stop subtitle
     my $last_sub = {is_sent_end => 0, occurrence => ''};
+    my $sub;
     
     SUB:
     for my $i (0 .. $#$subs->{data}) {
-        my $sub = $subs->{data}[$i];
+        $sub = $subs->{data}[$i];
         $sub->{is_sent_end} = $sub->{occurrence} =~ /[.!?:;]\W*$/;
         if ($i == 0) {
             print start($sub, $subs);
