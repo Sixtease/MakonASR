@@ -28,7 +28,7 @@ for my $fn (@ARGV) {
     
     SUB:
     for my $i (0 .. $#$subs->{data}) {
-        $sub = $subs->{data}[$i];
+        my $sub = $subs->{data}[$i];
         $sub->{is_sent_end} = $sub->{occurrence} =~ /[.!?:;]\W*$/;
         if ($i == 0) {
             print start($sub, $subs);
