@@ -5,6 +5,19 @@ use warnings;
 use utf8;
 use open qw(:std :utf8);
 use JSON ();
+use File::Basename qw(basename);
+
+my $for_lm = $ENV{BUILDING_LM} || 0;
+
+my %blacklist;
+if ($for_lm and $ENV{EV_word_blacklist}) {
+    if (open my $blacklist_fh, '<', $ENV{EV_word_blacklist}) {
+        while (<$blacklist_fh>) {
+            chomp;
+            $blacklist{$_} = 1;
+        }
+    }
+}
 
 my $sent_no = '00000';
 my $is_sent_end = 0;
@@ -12,6 +25,7 @@ my $last_sent_start;
 
 SUBFILE:
 for my $fn (@ARGV) {
+    if ($for_lm or -e "$ENV{MAKONFM_SUB_DIR}/" . basename($fn)) {} else { next }   # skip subs whom we have no MFCC for
     my $json = do { local (@ARGV, $/) = $fn; <> };
     next SUBFILE if not $json =~ /\bhumanic\b/;
     $json =~ s/^[^{]+//;
@@ -29,7 +43,7 @@ for my $fn (@ARGV) {
     my $last_sub = {is_sent_end => 0, occurrence => ''};
     
     SUB:
-    for my $sub (@{ $subs->{data} }) {
+    while (my ($i, $sub) = each (@{ $subs->{data} })) {
         my $is_humanic = ($sub->{humanic} .. !$sub->{humanic}) || 0;
         next if not $is_humanic;
         $sub->{is_sent_end} = $sub->{occurrence} =~ /[.!?:;]\W*$/;
@@ -48,6 +62,22 @@ for my $fn (@ARGV) {
             $sent_no++;
             next SUB
         }
+        
+        if ($for_lm) {
+            if ($blacklist{ uc($sub->{wordform}) }) {
+                next SUB
+            }
+            if ($sub->{occurrence} =~ /\b-$/) {
+                next SUB
+            }
+            if ($sub->{occurrence} =~ /\.\.\.$/) {
+                my $lookahead = $subs->{data}[$i+1];
+                if ($lookahead and $lookahead->{occurrence} !~ /^\W*[[:upper:]]/ and $lookahead->{humanic}) {
+                    next SUB
+                }
+            }
+        }
+        
         print ' ', $sub->{wordform};
     } continue {
         $last_sub = $sub;
