@@ -21,7 +21,7 @@ export EV_test_transcription="DATA/transcription/test.mlf"
 export EV_test_mfcc="$EV_train_mfcc"
 
 export EV_use_triphones='1'
-export EV_min_mixtures=8
+export EV_min_mixtures=15
 
 export EV_HERest_p=4
 
