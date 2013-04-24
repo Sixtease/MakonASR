@@ -17,5 +17,5 @@ ls "$@" | while read f; do
     recognize-splitted.pl "$stem" "$CHUNKDIR" > "$RECOUTDIR/recout-$stem"
 #    fi
     julout2subs.pl "$CHUNKDIR/splits" "$stem" < "$RECOUTDIR/recout-$stem" > "$SUBDIR/$stem.sub.js"
-    rm -R "$CHUNKDIR"
+    rm -R "$CHUNKDIR/*.mfcc"
 done
