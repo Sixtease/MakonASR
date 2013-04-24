@@ -15,6 +15,7 @@ sub parse {
     my $capitalize_next = 0;
     my $i;
     my @fonets;
+    my @cmscores;
     my $offset = 0;
     LINE:
     while (<>) {
@@ -29,6 +30,10 @@ sub parse {
         if (/pass1_best_phonemeseq:/ or /phseq1:/) {
             s/^\S*: //;
             @fonets = split / \| /;
+        }
+        if (/cmscore1:/) {
+            s/^\S*: //;
+            @cmscores = split /\s+/;
         }
         if ($in_wa) {
             my ($start, $end, $score, $word_bytes) = /\[\s*(\d+)\s+(\d+)\s*\]\s*(-?[\d.]+)\s+(\S+)/ or next LINE;
@@ -51,6 +56,7 @@ sub parse {
                 $rec{occurrence} = lc $word;
             }
             $rec{fonet} = $fonets[$i];
+            $rec{cmscore} = $cmscores[$i];
             push @rv, \%rec;
             $i++;
         }
