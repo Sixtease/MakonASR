@@ -24,7 +24,7 @@ my ($stem, $chunks_dir) = @ARGV;
 my @mfccs = glob("$chunks_dir/*.mfcc");
 generate_scp("$tempdir/mfcc.scp", \@mfccs);
 
-my $cmd = qq(julius -h hmms/hmmmodel -filelist "$tempdir/mfcc.scp" -nlr DATA/LM/tg.arpa -nrl DATA/LM/tgb.arpa -v DATA/wordlist/wl-test-phonet -hlist hmms/phones -walign -input mfcfile -fallback1pass);
+my $cmd = qq(julius -h hmms/hmmmodel -filelist "$tempdir/mfcc.scp" -nlr DATA/LM/tg.arpa -nrl DATA/LM/tgb.arpa -v DATA/wordlist/wl-test-phonet -hlist hmms/phones -walign -palign -input mfcfile -fallback1pass);
 print STDERR "$cmd\n";
 my $err = system($cmd);
 die "julius failed with status $err" if $err;
