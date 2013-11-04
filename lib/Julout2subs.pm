@@ -12,20 +12,30 @@ sub parse {
     my ($fh, $splits) = @_;
     my @rv;
     my $in_wa = 0;
+    my $in_pa = 0;
     my $capitalize_next = 0;
-    my $i;
+    my ($i,$j);
     my @fonets;
     my @cmscores;
     my $offset = 0;
+    my $prev_r;
+    #my %word2phone_cnt;
+    my @phone_num_to_word;
     LINE:
     while (<>) {
         if (/-- word alignment --/) {
             $in_wa = 1;
             $i = 0;
+            #%word2phone_cnt = ();
+            @phone_num_to_word = ();
             $offset = shift @$splits;
         };
+        if (/-- phoneme alignment --/) {
+            $in_pa = 1;
+            $j = 0;
+        }
         if (/=== end forced alignment ===/) {
-            $in_wa = 0;
+            $in_wa = $in_pa = 0;
         }
         if (/pass1_best_phonemeseq:/ or /phseq1:/) {
             s/^\S*: //;
@@ -56,9 +66,45 @@ sub parse {
                 $rec{occurrence} = lc $word;
             }
             $rec{fonet} = $fonets[$i];
+            $rec{fonet} =~ s/^\s+|\s+$//;
+            
+            my @phones = split /\s+/, $rec{fonet};
+            #$word2phone_cnt{\%rec} = scalar(@phones);
+            push(@phone_num_to_word, map(scalar(@rv), @phones));
+            
             $rec{cmscore} = $cmscores[$i];
             push @rv, \%rec;
             $i++;
+        }
+        if ($in_pa) {
+            my ($start, $end, $triphone) = /\[\s*(\d+)\s+(\d+)\s*\]\s*-?[\d.]+\s+([-+\w]+)/ or next LINE;
+            
+            next if $triphone eq 'sil';
+            
+            my ($l,$monophone,$r);
+            if (($l,$monophone,$r) = $triphone =~ /(\w+)-(\w+)\+(\w+)/) { }
+            elsif (($monophone,$r) = $triphone =~ /(\w+)\+(\w+)/) { }
+            elsif (($l,$monophone) = $triphone =~ /(\w+)-(\w+)/) { }
+            else {
+                $monophone = $triphone;
+            }
+            
+            # not all sp's are in phone alignment;
+            # hence, we must pretend as if they were here based on the context
+            # to correct the positional matching between word alignment
+            # and phone alignment
+            if ($l eq 'sp' and $prev_r eq 'sp') {
+                $j++;
+            }
+            
+            if ($monophone eq 'sp') {
+                my $word_i = $phone_num_to_word[$j];
+                $rv[$word_i]{slen} = ($end - $start) / 100;
+            }
+            
+            $j++;
+            
+            $prev_r = $r;
         }
     }
     return \@rv
