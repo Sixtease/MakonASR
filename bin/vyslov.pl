@@ -338,6 +338,7 @@ sub print_variants {
     if (/^o /) {
         print encode($enc, "$writ       v $_\n");
     }
+    # TODO vosumnást (cf. Vyslov.pm)
 }
 
 __END__
