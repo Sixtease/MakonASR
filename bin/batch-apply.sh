@@ -14,8 +14,8 @@ ls "$@" | while read f; do
     mkdir "$CHUNKDIR"
     split-by-subs.pl "$f" | split-mfcc.pl
 #    if [ -e "$RECOUTDIR/recout-$stem" ]; then : ; else
-    recognize-splitted.pl "$stem" "$CHUNKDIR" > "$RECOUTDIR/recout-$stem"
+    recognize-splitted.pl "$stem" "$CHUNKDIR" > "$RECOUTDIR/$stem"
 #    fi
-    julout2subs.pl "$CHUNKDIR/splits" "$stem" < "$RECOUTDIR/recout-$stem" > "$SUBDIR/$stem.sub.js"
+    julout2subs.pl "$CHUNKDIR/splits" "$stem" < "$RECOUTDIR/$stem" > "$SUBDIR/$stem.sub.js"
     rm -R "$CHUNKDIR"/*.mfcc
 done
