@@ -59,7 +59,7 @@ sub start {
 }
 sub end {
     my ($sub) = @_;
-    return" .. $sub->{timestamp}\n"
+    return " .. $sub->{timestamp}\n"
 }
 
 sub sentence_boundary {
