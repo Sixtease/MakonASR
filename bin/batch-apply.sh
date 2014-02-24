@@ -13,7 +13,7 @@ ls "$@" | while read f; do
     if mkdir "$TEMPDIR" 2>/dev/null; then echo "taking $stem" ; else echo "skipping $stem"; continue; fi
     mkdir "$CHUNKDIR"
     split-by-subs.pl "$f" | split-mfcc.pl
-#    if [ -e "$RECOUTDIR/recout-$stem" ]; then : ; else
+#    if [ -e "$RECOUTDIR/$stem" ]; then : ; else
     recognize-splitted.pl "$stem" "$CHUNKDIR" > "$RECOUTDIR/$stem"
 #    fi
     julout2subs.pl "$CHUNKDIR/splits" "$stem" < "$RECOUTDIR/$stem" > "$SUBDIR/$stem.sub.js"
