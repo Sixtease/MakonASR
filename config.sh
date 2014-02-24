@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PATH="bin:/home/sixtease/git/Evadevi/bin:/home/sixtease/programs/lmhtk/bin:/home/sixtease/share/install/srilm/bin:/home/sixtease/share/install/srilm/bin/i686:/home/sixtease/share/install/julius/4.2.1/julius-4.2.1-linuxbin/bin:$PATH"
+export PATH="`pwd`/bin:/home/sixtease/git/Evadevi/bin:/home/sixtease/programs/lmhtk/bin:/home/sixtease/share/install/srilm/bin:/home/sixtease/share/install/srilm/bin/i686:/home/sixtease/share/install/julius/4.2.1/julius-4.2.1-linuxbin/bin:$PATH"
 export EV_homedir=~/git/Evadevi/
 export EV_workdir=temp/
 export EV_outdir=hmms/
