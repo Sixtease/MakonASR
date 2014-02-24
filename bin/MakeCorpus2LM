@@ -1,7 +1,7 @@
 EV_LM?=DATA/LM/bg.lat
 EV_LMf?=DATA/LM/tg.arpa
 EV_LMb?=DATA/LM/tgb.arpa
-EV_vocab_size?=1700
+EV_vocab_size?=60000
 EV_wl_test?=DATA/wordlist/WORDLIST-test
 
 all: $(EV_LM) $(EV_wordlist_test_phonet)
