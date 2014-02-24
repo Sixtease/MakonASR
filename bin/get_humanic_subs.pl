@@ -27,7 +27,9 @@ SUBFILE:
 for my $fn (@ARGV) {
     if ($for_lm or -e "$ENV{MAKONFM_SUB_DIR}/" . basename($fn)) {} else { next }   # skip subs whom we have no MFCC for
     my $json = do { local (@ARGV, $/) = $fn; <> };
-    next SUBFILE if not $json =~ /\bhumanic\b/;
+    if ($for_lm and $ENV{LM_include_nonhumanic_subs}) { } else {
+        next SUBFILE if not $json =~ /\bhumanic\b/;
+    }
     $json =~ s/^[^{]+//;
     $json =~ s/[^}]+$//;
     
@@ -39,12 +41,19 @@ for my $fn (@ARGV) {
     }
     
     # pad end with a fake non-humanic subtitle
-    push $subs->{data}, { timestamp => 9999.99, occurrence => '' };
+    my $end_pad = { timestamp => 9999.99, occurrence => '' };
+    push $subs->{data}, $end_pad;
     my $last_sub = {is_sent_end => 0, occurrence => ''};
     
     SUB:
     while (my ($i, $sub) = each (@{ $subs->{data} })) {
-        my $is_humanic = ($sub->{humanic} .. !$sub->{humanic}) || 0;
+        my $is_humanic;
+        if ($ENV{LM_include_nonhumanic_subs}) {
+            $is_humanic = ($sub .. $sub == $end_pad) || 0;
+        }
+        else {
+            $is_humanic = ($sub->{humanic} .. !$sub->{humanic}) || 0;
+        }
         next if not $is_humanic;
         $sub->{is_sent_end} = $sub->{occurrence} =~ /[.!?:;]\W*$/;
         if ($is_humanic == 1) {
