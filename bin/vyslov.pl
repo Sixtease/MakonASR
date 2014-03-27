@@ -45,6 +45,7 @@ while (<>) {
 }
 
 sub specialcase {
+    return if not $dbh;
     my $ref = $dbh->selectcol_arrayref('SELECT pron FROM dict WHERE form=?', {}, $_);
     return @$ref
 }
