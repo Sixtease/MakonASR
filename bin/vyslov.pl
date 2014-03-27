@@ -6,7 +6,7 @@ use utf8;
 use Encode;
 use DBI;
 
-my $dbh = DBI->connect('dbi:Pg:dbname=MakonFM','sixtease','',{AutoCommit=>0});
+my $dbh = eval { DBI->connect('dbi:Pg:dbname=MakonFM','sixtease','',{AutoCommit=>0}) };
 
 my $enc = $ENV{EV_encoding} || 'UTF-8';
 
