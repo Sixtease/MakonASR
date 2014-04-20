@@ -150,8 +150,8 @@ sub init {
     s/^ROZ/ROZ!/g;
     s/RUTIN/RUTYN/g;
     s/^RÁDI(?=.)/RÁDY/g;
-    s/SCHWARZ/ŠVARC/
-    s/SCHW/ŠV/
+    s/SCHWARZ/ŠVARC/g;
+    s/SCHW/ŠV/g;
     s/SHOP/ŠOP/g;
     s/^SEBE/SEBE!/g;
     s/^SHO/SCHO/g;
