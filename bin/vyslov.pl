@@ -51,6 +51,7 @@ sub specialcase {
 }
 
 sub init {
+    if (/ß/) { deutsch() };
     s/NISM/NYZM/g;
     s/ANTI/ANTY/g;
     s/AKTI/AKTY/g;
@@ -82,10 +83,10 @@ sub init {
     s/DISP/DYSP/g;
     s/DIST/DYST/g;
     s/DIVIDE/DYVIDE/g;
-    s/^DOUČ/DO!UČ/g;
+    s/^DOUČ/DO!UČ/;
     s/DUKTI/DUKTY/g;
     s/EDIC/EDYC/g;
-    s/^EX(?=[AEIOUÁÉÍÓÚŮ])/EGZ/g;
+    s/^EX(?=[AEIOUÁÉÍÓÚŮ])/EGZ/;
     s/ELEKTRONI/ELEKTRONY/g;
     s/ENERGETI/ENERGETY/g;
     s/ETIK/ETYK/g;
@@ -95,7 +96,7 @@ sub init {
     s/GENETI/GENETY/g;
     s/GIENI/GIENY/g;
     s/IMUNI/IMUNY/g;
-    s/^INDI(?=.)/INDY/g;
+    s/^INDI(?=.)/INDY/;
     s/INDIV/INDYV/g;
     s/INICI/INYCI/g;
     s/INVESTI/INVESTY/g;
@@ -119,15 +120,15 @@ sub init {
     s/ING/YNG/g;
     s/GATIV/GATYV/g;
     s/(?<=.)MATI/MATY/g;
-    s/^MATI(?=[^CČN])/MATY/g;
-    s/^MATINÉ/MATYNÉ/g;
+    s/^MATI(?=[^CČN])/MATY/;
+    s/^MATINÉ/MATYNÉ/;
     s/MANIP/MANYP/g;
     s/MODERNI/MODERNY/g;
-    s/^NAU/NA!U/g;
-    s/^NE/NE!/g;
-    s/^ODD/OD!D/g;
-    s/^ODT/OT!T/g;
-    s/^ODI(?=[^V])/ODY/g;
+    s/^NAU/NA!U/;
+    s/^NE/NE!/;
+    s/^ODD/OD!D/;
+    s/^ODT/OT!T/;
+    s/^ODI(?=[^V])/ODY/;
     s/ORGANI/ORGANY/g;
     s/OPTIM/OPTYM/g;
     s/PANICK/PANYCK/g;
@@ -141,16 +142,18 @@ sub init {
     s/^POULI/PO!ULI/g;
     s/PRIVATI/PRIVATY/g;
     s/PROSTITU/PROSTYTU/g;
-    s/^PŘED(?=[^Ě])/PŘED!/g;
+    s/^PŘED(?=[^Ě])/PŘED!/;
     s/RADIK/RADYK/g;
-    s/^RADIO/RADYO/g;
+    s/^RADIO/RADYO/;
     s/RELATIV/RELATYV/g;
     s/RESTITU/RESTYTU/g;
     s/ROCK/ROK/g;
     s/^ROZ/ROZ!/g;
     s/RUTIN/RUTYN/g;
     s/^RÁDI(?=.)/RÁDY/g;
-    s/SHOP/sz O P/g;
+    s/SCHWARZ/ŠVARC/
+    s/SCHW/ŠV/
+    s/SHOP/ŠOP/g;
     s/^SEBE/SEBE!/g;
     s/^SHO/SCHO/g;
     s/SOFTWAR/SOFTVER/g;
@@ -176,6 +179,31 @@ sub init {
     s/VENTI/VENTY/g;
     s/VERTIK/VERTYK/g;
     s/^ZAU/ZA!U/g;
+    s/ÄH/É/g;
+    s/[ÄÆŒ]/É/g;
+    s/Å/A/g;
+    s/Ç/C/g;
+    s/[ËÈĘ]/E/g;
+    s/Ï/i/g;
+    s/Ł/L/g;
+    s/Ñ/Ň/g;
+    s/ÖH/É/g;
+    s/Ö/É/g;
+    s/Ø/O/g;
+    s/ÜH/Í/g;
+    s/Ü/I/g;
+}
+
+sub deutsch {
+    s/ß/S/g;
+    s/EI/AJ/g;
+    s/Z/C/g;
+    s/SCH/Š/g;
+    s/^SP/ŠP/;
+    s/^ST/ŠT/;
+    s/CK/K/g;
+    s/EU/OJ/g;
+    s/V/F/g;
 }
 
 sub prepis {
