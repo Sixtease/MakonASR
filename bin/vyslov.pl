@@ -24,21 +24,26 @@ while (<>) {
             print encode($enc, $writ), (' ' x 7), "sil\n";
             next
         }
+        my $out = '';
         if (my @spec = specialcase()) {
             for my $pron (@spec) {
-                print encode($enc, $writ), (' ' x 7), $pron, "\n";
+                $out .= $writ . (' ' x 7) . $pron . "\n";
             }
         }
-        print encode($enc, $writ);
-        print(' ' x 7);
+        $out .= $writ;
+        $out .= (' ' x 7);
         init();
         prepis();
         tr/[A-Z]/[a-z]/;
         prague2pilsen();
         infreq();
         add_sp();
-        print encode($enc, $_);
-        print "\n";
+        if (/[^a-z ]/) {
+            warn "unvyslovable $_\n";
+            next
+        }
+        $out .= "$_\n";
+        print encode($enc, $out);
         print_variants($writ);
     }
 }
@@ -189,8 +194,8 @@ sub init {
     s/ÖH/É/g;
     s/Ö/É/g;
     s/Ø/O/g;
-    s/ÜH/Í/g;
-    s/Ü/I/g;
+    s/ÜH/Ý/g;
+    s/Ü/Y/g;
 }
 
 sub deutsch {
