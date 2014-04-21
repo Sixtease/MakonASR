@@ -185,17 +185,19 @@ sub init {
     s/^ZAU/ZA!U/g;
     s/ÄH/É/g;
     s/[ÄÆŒ]/É/g;
-    s/Å/A/g;
-    s/Ç/C/g;
+    y/Å/O/;
+    s/[ĆÇ]/C/g;
     s/[ËÈĘ]/E/g;
-    s/Ï/i/g;
-    s/Ł/L/g;
-    s/Ñ/Ň/g;
+    y/Ï/Y/;
+    s/[ĽĹŁ]/L/g;
+    y/Ñ/Ň/;
+    s/Ô/UO/g;
     s/ÖH/É/g;
-    s/Ö/É/g;
-    s/Ø/O/g;
+    y/Ö/É/;
+    y/Ø/O/;
+    y/Ŕ/R/;
     s/ÜH/Ý/g;
-    s/Ü/Y/g;
+    y/Ü/Y/;
 }
 
 sub deutsch {
