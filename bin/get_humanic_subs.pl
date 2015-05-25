@@ -27,7 +27,7 @@ SUBFILE:
 for my $fn (@ARGV) {
     if ($for_lm or -e "$ENV{MAKONFM_SUB_DIR}/" . basename($fn)) {} else { next }   # skip subs whom we have no MFCC for
     my $json = do { local (@ARGV, $/) = $fn; <> };
-    if ($for_lm and $ENV{LM_include_nonhumanic_subs}) { } else {
+    if ($for_lm and ($ENV{LM_include_nonhumanic_subs} or $ENV{LM_nonhumanic_only})) { } else {
         next SUBFILE if not $json =~ /\bhumanic\b/;
     }
     $json =~ s/^[^{]+//;
@@ -50,6 +50,9 @@ for my $fn (@ARGV) {
         my $is_humanic;
         if ($ENV{LM_include_nonhumanic_subs}) {
             $is_humanic = ($sub .. $sub == $end_pad) || 0;
+        }
+        elsif ($ENV{LM_nonhumanic_only}) {
+            $is_humanic = (!$sub->{humanic} .. $sub->{humanic}) || 0;
         }
         else {
             $is_humanic = ($sub->{humanic} .. !$sub->{humanic}) || 0;
