@@ -2,8 +2,8 @@
 
 export BUILDING_LM=1
 
-DEST_LM="${DEST_LM:-DATA/LM}"
-DEST_WL="${DEST_WL:-DATA/wordlist}"
+DEST_LM="${DEST_LM:-$ASR_ROOT/DATA/LM}"
+DEST_WL="${DEST_WL:-$ASR_ROOT/DATA/wordlist}"
 
 export LM_nonhumanic_only=1
 get_humanic_subs.pl "$MAKONFM_SUB_DIR"/*.sub.js | sublm-mkdict-mkcorpus.pl "$EV_workdir/sublm-wordlist" "$EV_workdir/sublm-corpus"
