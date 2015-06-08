@@ -42,6 +42,9 @@ for my $fn (@ARGV) {
     
     # pad end with a fake non-humanic subtitle
     my $end_pad = { timestamp => 9999.99, occurrence => '' };
+    if ($ENV{LM_nonhumanic_only}) {
+        $end_pad->{humanic} = 1;
+    }
     push $subs->{data}, $end_pad;
     my $last_sub = {is_sent_end => 0, occurrence => ''};
     
