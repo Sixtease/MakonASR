@@ -8,10 +8,10 @@ DEST_WL="${DEST_WL:-$ASR_ROOT/DATA/wordlist}"
 export LM_nonhumanic_only=1
 get_humanic_subs.pl "$MAKONFM_SUB_DIR"/*.sub.js | sublm-mkdict-mkcorpus.pl "$EV_workdir/sublm-wordlist" "$EV_workdir/sublm-corpus"
 unset LM_nonhumanic_only
-mlf2wordlist.pl "$EV_train_transcription" "$EV_workdir/humsublm-wordlist"
-mlf2corpus.pl   "$EV_train_transcription" "$EV_workdir/humsublm-corpus"
+mlf2wordlist.pl "$EV_train_transcription" > "$EV_workdir/humsublm-wordlist"
+mlf2corpus.pl   "$EV_train_transcription" > "$EV_workdir/humsublm-corpus"
 corpus2wordlist.pl < "$EV_corpus" > "$EV_workdir/txt-wordlist"
-merge-wordlists.pl 65000 "$EV_workdir/sublm-wordlist" "$EV_workdir/txt-wordlist" > "$EV_workdir/merged-wordlist"
+merge-wordlists.pl 65000 "$EV_workdir/humsublm-wordlist" "$EV_workdir/sublm-wordlist" "$EV_workdir/txt-wordlist" > "$EV_workdir/merged-wordlist"
 
 cat "$EV_corpus" > "$EV_workdir/merged-corpus"
 cat "$EV_workdir/sublm-corpus" >> "$EV_workdir/merged-corpus"
