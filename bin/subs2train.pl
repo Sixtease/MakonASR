@@ -38,7 +38,7 @@ while (<STDIN>) {
         else {
             system qq(mkdir -p "$ENV{EV_workdir}temp/wav");
             unlink glob("$ENV{EV_workdir}temp/wav/*");
-            cmd(qq(sox "$in_audio_fn" --channels 1 "$wav_fn" mixer))
+            cmd(qq(sox "$in_audio_fn" --channels 1 "$wav_fn" remix -))
                 or next LINE;
             cmd(qq(HCopy -C "$ENV{EV_homedir}resources/htk-config-wav2mfcc-full" "$wav_fn" "$mfcc_fn"))
                 or next LINE;
@@ -51,7 +51,7 @@ while (<STDIN>) {
     else {
         cmd(qq(HCopy -T 1 -C "$ENV{EV_homedir}resources/htk-config-mfcc2mfcc-full" -s ${start}e7 -e ${end}e7 "$in_mfcc_fn" "$out_mfcc_fn"))
             or next LINE;
-        cmd(qq(sox "$in_audio_fn" --channels 1 "$out_audio_fn" trim "$start" "=$end" mixer))
+        cmd(qq(sox "$in_audio_fn" --channels 1 "$out_audio_fn" trim "$start" "=$end" remix -))
             or next LINE;
     }
     

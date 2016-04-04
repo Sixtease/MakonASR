@@ -56,11 +56,11 @@ while (<$split_fh>) {
     chomp;
     $chunk_fn = "$chunkdir/chunk$i.wav";
     print STDERR "($i) $fn => $chunk_fn $prev .. $_\n";
-    system qq{sox "$fn" --channels 1 "$chunk_fn" trim "$prev" "=$_" mixer};
+    system qq{sox "$fn" --channels 1 "$chunk_fn" trim "$prev" "=$_" remix -};
 } continue {
     $prev = $_;
     $i++;
 }
 $chunk_fn = "$chunkdir/chunk$i.wav";
 print STDERR "($i) $fn => $chunk_fn $prev .. END\n";
-system qq{sox "$fn" --channels 1 "$chunk_fn" "trim" "$prev" mixer};
+system qq{sox "$fn" --channels 1 "$chunk_fn" "trim" "$prev" remix -};
