@@ -5,16 +5,22 @@ use warnings;
 use utf8;
 use open qw(:std :utf8);
 
-my ($in_mfcc_dir, $out_mfcc_dir, $in_audio_dir, $out_audio_dir, $out_mlf_fn) = @ARGV;
+my ($in_mfcc_dir, $out_mfcc_dir, $in_audio_dir, $out_audio_dir, $train_out_mlf_fn, $test_out_mlf_fn) = @ARGV;
 
-open my $mlf_fh, '>:utf8', $out_mlf_fn or die "Couldn't open '$out_mlf_fn': $!";
+my %is_test = map {;$_=>1} split /:/, $ENV{MAKONFM_TEST_TRACKS};
+my $test_start = $ENV{MAKONFM_TEST_START_POS} || 0;
+my $test_end   = $ENV{MAKONFM_TEST_END_POS}   || 'Infinity';
+
+open my $train_mlf_fh, '>:utf8', $train_out_mlf_fn or die "Couldn't open '$train_out_mlf_fn': $!";
+open my $test_mlf_fh,  '>:utf8', $test_out_mlf_fn  or die "Couldn't open '$test_out_mlf_fn': $!";
 
 my $log_fh;
 if ($ENV{SUB_EXTRACTION_LOG}) {
     open $log_fh, '>', $ENV{SUB_EXTRACTION_LOG};
 }
 
-print {$mlf_fh} "#!MLF!#\n";
+print {$train_mlf_fh} "#!MLF!#\n";
+print {$test_mlf_fh}  "#!MLF!#\n";
 
 $/ = '';
 LINE:
@@ -25,8 +31,19 @@ while (<STDIN>) {
     my $out_mfcc_fn = "$out_mfcc_dir/$sid.mfcc";
     my $in_audio_fn = "$in_audio_dir/$filestem.mp3";
     my $out_audio_fn = "$out_audio_dir/$sid.wav";
+
+    my $mlf_fh = $train_mlf_fh;
+    my $is_test_sent = 0;
+    if ($is_test{$filestem}
+        and $start > $test_start
+        and $end   < $test_end
+    ) {
+        $mlf_fh = $test_mlf_fh;
+        $is_test_sent = 1;
+    }
     
-    print {$log_fh} "$filestem $start .. $end => $sid\n" if $log_fh;
+    my $kind = $is_test_sent ? 'test' : 'train';
+    print {$log_fh} "$filestem $start .. $end => $sid ($kind)\n" if $log_fh;
     next if not -e $in_mfcc_fn;
     
     my ($cmd, $error);
