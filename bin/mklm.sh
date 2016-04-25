@@ -15,7 +15,7 @@ merge-wordlists.pl 65000 "$EV_workdir/humsublm-wordlist" "$EV_workdir/sublm-word
 
 cat "$EV_corpus" > "$EV_workdir/merged-corpus"
 cat "$EV_workdir/sublm-corpus" >> "$EV_workdir/merged-corpus"
-for s in {1..50}; do cat "$EV_workdir/humsublm-corpus" >> "$EV_workdir/merged-corpus"; done
+for s in {1..2}; do cat "$EV_workdir/humsublm-corpus" >> "$EV_workdir/merged-corpus"; done  # TODO: exclude test data, optimize weight
 
 ngram-count -order 3 -vocab "$EV_workdir/merged-wordlist" -text "$EV_workdir/merged-corpus"  -lm "$DEST_LM/tg.arpa"
 reverse-corpus.pl < "$EV_workdir/merged-corpus" > "$EV_workdir/merged-corpusb"
