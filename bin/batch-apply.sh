@@ -7,6 +7,7 @@ if [ -z "$WORKDIR" ]; then echo "WORKDIR must be set"; exit 1; fi
 RECOUTDIR="${RECOUTDIR:-$WORKDIR}"
 
 ls "$@" | while read f; do
+    if [ -e '/tmp/SIGKILL' ]; then echo 'interrupt'; exit 1; fi
     stem=`basename "$f" | sed 's/\.sub\.js$//'`
     export TEMPDIR="$WORKDIR/$stem"
     export CHUNKDIR="$TEMPDIR/chunks"
