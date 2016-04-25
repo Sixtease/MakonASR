@@ -17,6 +17,8 @@ ls "$@" | while read f; do
 #    if [ -e "$RECOUTDIR/$stem" ]; then : ; else
     recognize-splitted.pl "$stem" "$CHUNKDIR" > "$RECOUTDIR/$stem"
 #    fi
-    julout2subs.pl "$CHUNKDIR/splits" "$stem" < "$RECOUTDIR/$stem" > "$SUBDIR/$stem.sub.js"
+    if [ -z "$RECOUT_ONLY" ]; then
+        julout2subs.pl "$CHUNKDIR/splits" "$stem" < "$RECOUTDIR/$stem" > "$SUBDIR/$stem.sub.js"
+    fi
     rm -R "$CHUNKDIR"/*.mfcc
 done
