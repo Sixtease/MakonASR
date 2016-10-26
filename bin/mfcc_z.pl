@@ -15,9 +15,9 @@ my $VSIZE = $BYTES_PER_COEF * $LEN;
 
 my ($m0_fn, $avg_fn, $outfn) = @ARGV;
 
-open my $m0_fh,  '<', $m0_fn or die "cannot open first mfcc '$m0_fn': $!";
-open my $avg_fh, '<', $avg_fn or die "cannot open second mfcc '$avg_fn': $!";
-open my $outfh,  '>', $outfn or die "cannot open output file '$outfn': $!";
+open my $m0_fh,  '<', $m0_fn  or die "cannot open first mfcc '$m0_fn': $!";
+open my $avg_fh, '<', $avg_fn or die "cannot open averaged mfcc coefs file '$avg_fn': $!";
+open my $outfh,  '>', $outfn  or die "cannot open output file '$outfn': $!";
 
 binmode $m0_fh, ':raw';
 binmode $outfh, ':raw';
