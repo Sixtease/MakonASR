@@ -24,9 +24,19 @@ while (<$spans_fh>) {
     system qq(HCopy -C "$hconf" -s ${start}e7 -e ${end}e7 "$in_mfcc_fn" $out_qfn);
 }
 
-my $concat = join ' + ', @parts;
+my $b = 0;
+while (@parts > 1) {
+    my $stop = ((@parts > 1000) ? 999 : $#parts);
+    my @batch = @parts[0 .. $stop];
 
-my $cmd = qq(HCopy -C "$hconf" $concat "$out_mfcc_dir/$stem.mfcc");
-system $cmd;
+    my $batch_fn = "$out_mfcc_dir/$stem.batch$b.mfcc";
+    $b++;
+    splice @parts, 0, $stop+1, $batch_fn;
 
-system "rm @parts";
+    my $concat = join ' + ', @batch;
+    my $cmd = qq(HCopy -C "$hconf" $concat "$batch_fn");
+    system $cmd;
+
+    system "rm @batch";
+}
+system qq(mv "$parts[0]" "$out_mfcc_dir/$stem.mfcc") if @parts;
