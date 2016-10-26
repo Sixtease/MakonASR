@@ -42,7 +42,7 @@ export EV_iter_triphones=3
 export EV_iter_mixtures=4
 
 export EV_thread_cnt=2
-export EV_heldout_ratio=39
+export EV_heldout_ratio=40
 
 export EV_corpus="$ASR_ROOT/DATA/corpus"
 export EV_word_blacklist="$ASR_ROOT/DATA/wordlist/blacklist"
