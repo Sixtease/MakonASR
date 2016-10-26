@@ -15,22 +15,19 @@ my $BYTES_PER_COEF = 4;
 my $HEADER_SIZE = 12;
 my $VSIZE = $BYTES_PER_COEF * $LEN;
 
-my ($m0_fn, $mz_fn, $outfn) = @ARGV;
+my ($m0_fn, $mz_fn) = @ARGV;
 
 open my $m0_fh, '<', $m0_fn or die "cannot open first mfcc '$m0_fn': $!";
 open my $mz_fh, '<', $mz_fn or die "cannot open second mfcc '$mz_fn': $!";
-#open my $outfh, '>', $outfn or die "cannot open output file '$outfn': $!";
 
 binmode $m0_fh, ':raw';
 binmode $mz_fh, ':raw';
-#binmode $outfh, ':raw';
 
 my ($result, $buffer);
 
 $result = read $m0_fh, $buffer, $HEADER_SIZE;
 die "read error from $m0_fn: $!" if not defined $result;
 die "no header present in $m0_fn" if $result < $HEADER_SIZE;
-#print {$outfh} $result; # pass header from file1
 
 $result = read $mz_fh, $buffer, $HEADER_SIZE;
 die "read error from $mz_fn: $!" if not defined $result;
