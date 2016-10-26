@@ -58,8 +58,8 @@ export WAVDIR="$ASR_ROOT/DATA/wav"
 export SUB_EXTRACTION_LOG="$TEMPDIR/sub_extraction_log"
 
 export MAKONFM_SUB_DIR='/home/sixtease/dokumenty/skola/phd/webapp/MakonFM/root/static/subs'
-export MAKONFM_MFCC_DIR='/home/sixtease/Music/Makon/mfcc'
-export MAKONFM_MP3_DIR='/home/sixtease/Music/Makon/all/mp3'
+export MAKONFM_MFCC_DIR='/home/sixtease/kroupy/Music/Makon/mfcc'
+export MAKONFM_MP3_DIR='/home/sixtease/kroupy/Music/Makon/all/mp3'
 
 export MAKONFM_TEST_TRACKS="76-05B-Kaly-10:82-01A:kotouc-S01-c:86-05A-Brno-9.2.1986-3:90-45A"
 export MAKONFM_TEST_START_POS=60    # take testing data from 1 minute into the track
