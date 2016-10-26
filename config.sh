@@ -8,6 +8,8 @@ export EV_homedir=~/git/Evadevi/
 export EV_workdir="$ASR_ROOT/temp/"
 export EV_outdir="$ASR_ROOT/hmms/"
 
+export PERL5LIB="${EV_homedir}lib:$ASR_ROOT/lib:$PERL5LIB"
+
 export EV_encoding='iso-8859-2'
 
 export EV_train_mfcc="$ASR_ROOT/DATA/mfcc"
