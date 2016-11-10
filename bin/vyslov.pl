@@ -57,6 +57,7 @@ sub specialcase {
 sub init {
     if (/ß/) { deutsch() };
     s/NISM/NYZM/g;
+    s/TISM/TYZM/g;
     s/ANTI/ANTY/g;
     s/AKTI/AKTY/g;
     s/ATIK/ATYK/g;
@@ -128,7 +129,8 @@ sub init {
     s/^MATINÉ/MATYNÉ/;
     s/MANIP/MANYP/g;
     s/MODERNI/MODERNY/g;
-    s/^NAU/NA!U/;
+    s/NAU/NA!U/;
+    s/ZAU/ZA!U/;
     s/^NE/NE!/;
     s/^ODD/OD!D/;
     s/^ODT/OT!T/;
@@ -182,6 +184,7 @@ sub init {
     s/UNIVER/UNYVER/g;
     s/VENTI/VENTY/g;
     s/VERTIK/VERTYK/g;
+    s/AUGUSTIN/aw GUST ii N/g;
     s/^ZAU/ZA!U/g;
     s/ÄH/É/g;
     s/[ÄÆŒ]/É/g;
