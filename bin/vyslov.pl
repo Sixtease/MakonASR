@@ -36,7 +36,7 @@ while (<>) {
         prepis();
         tr/[A-Z]/[a-z]/;
         prague2pilsen();
-        infreq();
+        #infreq();
         add_sp();
         if (/[^a-z ]/) {
             warn "unvyslovable $_\n";
@@ -362,7 +362,7 @@ sub infreq {
     s/dz/c/g;
     s/dzh/ch/g;
     s/ew/e u/g;
-    s/aw/a u/g; # XXX: sundat, az bude vic aw'ek v trenovacich datech
+    s/aw/a u/g;
     s/mg/m/g;
     s/oo/o/g;
 }
