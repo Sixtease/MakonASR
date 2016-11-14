@@ -6,6 +6,7 @@ use utf8;
 use Encode;
 
 my $dbh = eval { require DBI; DBI->connect('dbi:Pg:dbname=MakonFM','sixtease','',{AutoCommit=>0}) };
+if (not $dbh) { warn "No DB connection, omitting dictionary" }
 
 my $enc = $ENV{EV_encoding} || 'UTF-8';
 
