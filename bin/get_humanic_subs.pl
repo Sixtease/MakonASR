@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use utf8;
 use open qw(:std :utf8);
-use JSON ();
+use JSON::XS ();
 use File::Basename qw(basename);
 
 my $for_lm = $ENV{BUILDING_LM} || 0;
@@ -34,7 +34,7 @@ for my $fn (@ARGV) {
     $json =~ s/[^}]+$//;
     
     undef $@;
-    my $subs = eval { JSON->new->decode($json) };
+    my $subs = eval { JSON::XS->new->decode($json) };
     if (not $subs) {
         warn "JSON parse failed: $@";
         next SUBFILE;
