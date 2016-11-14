@@ -233,7 +233,7 @@ sub prepis {
     s/CH/#/g;
     s/W/V/g;
     s/Q/KV/g;
-    #s/DŽ/&/g;  v původním vyslov nefungovalo
+    s/DŽ/&/g;
     s/DZ/@/g;
     s/X/KS/g;
 
