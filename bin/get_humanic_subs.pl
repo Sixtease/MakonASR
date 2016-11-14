@@ -86,9 +86,10 @@ for my $fn (@ARGV) {
                 next SUB
             }
             if ($sub->{occurrence} =~ /\.\.\.$/) {
+                # force sentence boundary after triple dot
                 my $lookahead = $subs->{data}[$i+1];
-                if ($lookahead and $lookahead->{occurrence} !~ /^\W*[[:upper:]]/ and $lookahead->{humanic}) {
-                    next SUB
+                if ($lookahead) {
+                    $lookahead->{occurrence} = ucfirst $lookahead->{occurrence};
                 }
             }
         }
