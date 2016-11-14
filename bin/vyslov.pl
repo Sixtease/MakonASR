@@ -62,7 +62,7 @@ sub specialcase {
 }
 
 sub init {
-    if (/ß/) { deutsch() };
+    if (/[ÖÄÜß]/) { deutsch() };
     s/NISM/NYZM/g;
     s/TISM/TYZM/g;
     s/ANTI/ANTY/g;
