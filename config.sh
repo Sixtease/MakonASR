@@ -65,4 +65,6 @@ export MAKONFM_TEST_TRACKS="76-05B-Kaly-10:82-01A:kotouc-S01-c:86-05A-Brno-9.2.1
 export MAKONFM_TEST_START_POS=60    # take testing data from 1 minute into the track
 export MAKONFM_TEST_END_POS=660     # up to minute 11 (10 minutes total per track)
 
+export MAKONFM_PHONE_MAP="$ASR_ROOT/DATA/phone-map" # phone substitutions to avoid infrequent phones
+
 . "${EV_homedir}config.sh"

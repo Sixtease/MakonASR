@@ -10,6 +10,12 @@ if (not $dbh) { warn "No DB connection, omitting dictionary" }
 
 my $enc = $ENV{EV_encoding} || 'UTF-8';
 
+my %phone_map;
+my $phone_map_fn = $ENV{MAKONFM_PHONE_MAP};
+if (open my $phone_map_fh, '<', $phone_map_fn) {
+    %phone_map = map {chomp; split /\s+/, $_, 2} <$phone_map_fh>;
+}
+
 my $out_fn = pop @ARGV;
 if ($out_fn) {
     close STDOUT;
@@ -37,7 +43,7 @@ while (<>) {
         prepis();
         tr/[A-Z]/[a-z]/;
         prague2pilsen();
-        #infreq();
+        infreq();
         add_sp();
         if (/[^a-z ]/) {
             warn "unvyslovable $_\n";
@@ -360,12 +366,17 @@ sub prague2pilsen {
 }
 
 sub infreq {
-    s/dz/c/g;
-    s/dzh/ch/g;
-    s/ew/e u/g;
-    s/aw/a u/g;
-    s/mg/m/g;
-    s/oo/o/g;
+    while (my ($from, $to) = each %phone_map) {
+        s/\b$from\b/$to/g;
+    }
+    return;
+
+    #s/dz/c/g;
+    #s/dzh/ch/g;
+    #s/ew/e u/g;
+    #s/aw/a u/g;
+    #s/mg/m/g;
+    #s/oo/o/g;
 }
 
 sub add_sp {
