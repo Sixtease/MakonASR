@@ -68,8 +68,7 @@ while (<STDIN>) {
     else {
         cmd(qq(HCopy -T 1 -C "$ENV{EV_homedir}resources/htk-config-mfcc2mfcc-full" -s ${start}e7 -e ${end}e7 "$in_mfcc_fn" "$out_mfcc_fn"))
             or next LINE;
-        cmd(qq(sox "$in_audio_fn" --channels 1 "$out_audio_fn" trim "$start" "=$end" remix -))
-            or next LINE;
+        print {$log_fh} qq(\$ sox "$in_audio_fn" --channels 1 "$out_audio_fn" trim "$start" "=$end" remix -\n) if $log_fh;
     }
     
     print {$mlf_fh} qq("*/$sid.lab"\n);
