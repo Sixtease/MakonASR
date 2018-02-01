@@ -2,7 +2,7 @@
 
 export ASR_ROOT=~/skola/phd/asr
 
-export PATH="$ASR_ROOT/bin:/home/sixtease/git/Evadevi/bin:/home/sixtease/programs/lmhtk/bin:/home/sixtease/share/install/srilm/bin:/home/sixtease/share/install/srilm/bin/i686:/home/sixtease/share/install/julius/4.2.1/julius-4.2.1-linuxbin/bin:$PATH"
+export PATH="$ASR_ROOT/bin:/home/sixtease/git/Evadevi/bin:/home/sixtease/programs/lmhtk/bin:/home/sixtease/share/install/srilm/srilm-1.7.2/bin/i686-m64:/home/sixtease/share/install/srilm/srilm-1.7.2/bin:$PATH"
 
 export EV_homedir=~/git/Evadevi/
 export EV_workdir="$ASR_ROOT/temp/"
