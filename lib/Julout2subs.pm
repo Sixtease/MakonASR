@@ -4,9 +4,10 @@ use strict;
 use utf8;
 use Encode qw(decode);
 use Evadevi::Util qw(get_filehandle);
-use JSON ();
+use JSON::XS qw(encode_json);
 
 my $enc = $ENV{EV_encoding};
+my $json = JSON::XS->new->pretty(1)->space_before(0);
 
 sub parse {
     my ($fh, $splits) = @_;
@@ -112,7 +113,7 @@ sub parse {
 
 sub json_start {
     my ($stem) = @_;
-    return qq/jQuery(document).trigger("got_subtitles.MakonFM", { "filestem": "$stem", "data": /
+    return qq/jsonp_subtitles({ "filestem": "$stem", "data": /
 }
 sub json_end {
     return "\n});\n"
@@ -126,7 +127,7 @@ sub convert {
         /([\d.]+)\s*\.\./ and push @splits, $1;
     }
     my $subs = parse($fh, \@splits);
-    return json_start($stem) . JSON->new->pretty->encode($subs) . json_end();
+    return json_start($stem) . $json->encode($subs) . json_end();
 }
 
 1

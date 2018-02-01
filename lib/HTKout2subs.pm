@@ -4,8 +4,8 @@ package HTKout2subs;
 
 use strict;
 use utf8;
-use JSON ();
-use Encode;
+use JSON::XS qw(encode_json);
+use Encode qw(decode_utf8 decode);
 use open qw(:std :utf8);
 
 our $quiet = 0;
@@ -77,8 +77,8 @@ sub convert {
     my @subs = @{get_subs($splits_fh)};
     close $splits_fh;
     
-    my $json = JSON->new->pretty;
-    print qq/jQuery(document).trigger('got_subtitles.MakonFM', { "filestem": "$subfn", "data": @{[$json->encode(\@subs)]} });/;
+    my $subs_json = decode_utf8(encode_json(\@subs));
+    print qq/jQuery(document).trigger('got_subtitles.MakonFM', { "filestem": "$subfn", "data": $subs_json });/;
 }
 
 1
