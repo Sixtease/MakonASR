@@ -13,7 +13,7 @@ my $subdir  = $ENV{SUBDIR};
 my $tempdir = $ENV{TEMPDIR};
 my $lmf     = $ENV{EV_LMf};
 my $lmb     = $ENV{EV_LMb};
-my $wl      = 'DATA/wordlist/wl-test-phonet';
+my $wl      = $ENV{WORDLIST} || 'DATA/wordlist/wl-test-phonet';
 
 GetOptions(
     'subdir=s'   => \$subdir,
