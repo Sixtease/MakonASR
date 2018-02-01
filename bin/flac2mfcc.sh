@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ~/funkce.sh
+#. ~/funkce.sh
 
 usage() {
     echo "$0 -i input_directory [-o output_directory] -C htk-config-wav2mfcc -t temp_directory *.flac"
@@ -14,34 +14,32 @@ C=~/git/Evadevi/resources/htk-config-wav2mfcc
 while getopts 'i:o:C:t:' OPTION; do
     case "$OPTION" in
     i)
-        indir="$OPTARG"
-        ;;
+        indir="$OPTARG" ;;
     o)
-        outdir="$OPTARG"
-        ;;
+        outdir="$OPTARG" ;;
     C)
-        C="$OPTARG"
-        ;;
+        C="$OPTARG" ;;
     t)
-        tempdir="$OPTARG"
-        ;;
+        tempdir="$OPTARG" ;;
     ?)
-        usage
-        ;;
+        usage ;;
     esac
 done
+shift $((OPTIND-1))
 
-echo "indir: $indir, outdir: $outdir, tempdir: $tempdir, htkconf: $C"
+wildcard="$1"; shift
+
+echo "indir: $indir, outdir: $outdir, tempdir: $tempdir, htkconf: $C, wildcard: $wildcard"
 
 if [ -d "$indir" ]; then : ; else
     usage
     exit 1
 fi
 
-ls "$indir" | while read s; do
+ls "$indir/"$wildcard | while read s; do
     if [ -e "$tempdir/SIGKILL" ]; then echo konec; exit 1; fi
     stem="`basename $s | sed s/.flac//`"
-    infile="$indir/$s"
+    infile="$s"
     echo `date '+%T'` $stem >&2
     tmp="$tempdir/$stem.wav"
     outfile="$outdir/$stem.mfcc"
