@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use utf8;
-use JSON ();
+use JSON::XS qw(decode_json);
 
 SUBFILE:
 for my $fn (@ARGV) {
@@ -13,7 +13,7 @@ for my $fn (@ARGV) {
     $json =~ s/[^}]+$//;
     
     undef $@;
-    my $subs = eval { JSON->new->decode($json) };
+    my $subs = eval { decode_json($json) };
     if (not $subs) {
         warn "JSON parse failed: $@";
         next SUBFILE;

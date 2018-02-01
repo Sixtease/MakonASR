@@ -34,7 +34,7 @@ for my $fn (@ARGV) {
     }
     my $sent_no = '00000';
     for (1 .. $chunks_cnt) {
-        printf (
+        printf(
             "sent%s %s %.2f .. %.2f\n",
             $sent_no++,
             $stem,

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use utf8;
 use open qw(:std :utf8);
-use JSON ();
+use JSON::XS qw(decode_json);
 
 my $sent_no = '00000';
 my $is_sent_end = 0;
@@ -17,7 +17,7 @@ for my $fn (@ARGV) {
     $json =~ s/[^}]+$//;
     
     undef $@;
-    my $subs = eval { JSON->new->decode($json) };
+    my $subs = eval { decode_json($json) };
     if (not $subs) {
         warn "JSON parse failed: $@";
         next SUBFILE;
