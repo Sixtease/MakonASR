@@ -19,6 +19,19 @@ if ($for_lm and $ENV{EV_word_blacklist}) {
     }
 }
 
+my %SKIP_STEM;
+my $SKIP_START;
+my $SKIP_END;
+if (    $ENV{MAKONFM_SKIP_TEST_SUBS}
+    and $ENV{MAKONFM_TEST_TRACKS}
+    and $ENV{MAKONFM_TEST_START_POS}
+    and $ENV{MAKONFM_TEST_END_POS}
+) {
+    %SKIP_STEM = map {;$_=>1} split /:/, $ENV{MAKONFM_TEST_TRACKS};
+    $SKIP_START = $ENV{MAKONFM_TEST_START_POS};
+    $SKIP_END   = $ENV{MAKONFM_TEST_END_POS};
+}
+
 my $sent_no = '00000';
 my $is_sent_end = 0;
 my $last_sent_start;
@@ -39,6 +52,8 @@ for my $fn (@ARGV) {
         warn "JSON parse failed: $@";
         next SUBFILE;
     }
+
+    my $skip = $SKIP_STEM{$subs->{filestem}} || 0;
     
     # pad end with a fake non-humanic subtitle
     my $end_pad = { timestamp => 9999.99, occurrence => '' };
@@ -59,6 +74,9 @@ for my $fn (@ARGV) {
         }
         else {
             $is_humanic = ($sub->{humanic} .. !$sub->{humanic}) || 0;
+        }
+        if ($skip and $sub->{timestamp} >= $SKIP_START and $sub->{timestamp} <= $SKIP_END) {
+            $is_humanic = 0;
         }
         next if not $is_humanic;
         $sub->{is_sent_end} = $sub->{occurrence} =~ /[.!?:;]\W*$/;
