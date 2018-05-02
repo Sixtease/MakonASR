@@ -6,6 +6,7 @@ use warnings;
 use utf8;
 use open qw(:std :utf8);
 use JSON::XS qw(decode_json);
+use Encode qw(encode_utf8);
 
 SUBFILE:
 for my $fn (@ARGV) {
@@ -14,11 +15,13 @@ for my $fn (@ARGV) {
     $json =~ s/[^}]+$//s;
     
     undef $@;
-    my $subs = eval { decode_json($json) };
+    my $subs = eval { decode_json(encode_utf8($json)) };
     if (not $subs) {
-        warn "JSON parse failed: $@";
+        warn "JSON parse failed for $fn: $@";
         next SUBFILE;
     }
+
+    say $subs->{filestem}, ':';
 
     my @sils;
     my $sub;
@@ -26,61 +29,44 @@ for my $fn (@ARGV) {
     SUB:
     for my $i (0 .. $#{$subs->{data}}) {
         $sub = $subs->{data}[$i];
-        my $len = $sub->{slen} - 0; # silence length
+        my $len = $sub->{slen} || 0; # silence length
         my $start = $sub->{sstart}; # silence start
+        next SUB if not defined $start;
         my $mid = $start + $len / 2;
-        die "long silence (start: $start, length: $len)" if $len > 30;
+        warn "long silence (stem: $subs->{filestem}, start: $start, length: $len)" if $len > 30;
         push @sils, {
             len => $len,
             mid => $mid,
         };
     }
+    my $file_end = $subs->{data}[-1]{sstart} + $subs->{data}[-1]{slen};
 
-    $maxi = $#sils;
+    my $maxi = $#sils;
     for my $i (1 .. $maxi) {
         $sils[$i]{l} = $sils[$i - 1];
     }
     for my $i (0 .. $maxi - 1) {
         $sils[$i]{r} = $sils[$i + 1];
     }
+    $sils[ 0]{l} = { mid => 0 };
+    $sils[-1]{r} = { mid => $file_end };
 
     @sils = sort {$a->{len} <=> $b->{len}} @sils;
-}
 
-sub start {
-    my ($sub, $subs) = @_;
-    $last_sent_start = $sub;
-    return "sent$sent_no $subs->{filestem} $sub->{timestamp}"
-}
-sub end {
-    my ($sub) = @_;
-    return " .. $sub->{timestamp}\n"
-}
+    my @kept;
+    for my $sil (@sils) {
+        if ($sil->{r}{mid} - $sil->{l}{mid} > 60) {
+            push @kept, $sil;
+        }
+        else {
+            $sil->{l}{r} = $sil->{r};
+            $sil->{r}{l} = $sil->{l};
+        }
+    }
 
-sub sentence_boundary {
-    my ($last_sub, $sub) = @_;
-    my $was_sent_end = $last_sub->{is_sent_end};
-    if ($was_sent_end and $sub->{occurrence} =~ /^\W*[[:upper:]]/) {
-        return 1
+    for my $point (sort {$a <=> $b} map $_->{mid}, @kept) {
+        printf "%.2f\n", $point + 0.0001;
     }
-    
-    if ($sub->{occurrence} =~ /^ \s* \. \s* [[:upper:]]/x) {
-        return 1
-    }
-    
-    my $t = $sub->{timestamp} - $last_sent_start->{timestamp};
 
-    if ($was_sent_end and $last_sent_start and $t > 10) {
-        return 1
-    }
-    
-    if ($last_sub->{occurrence} =~ /[,;]\W*$/ and $t > 15) {
-        return 1
-    }
-    
-    if ($t > 30) {
-        return 1
-    }
-    return 0
+    say '';
 }
-
