@@ -7,32 +7,35 @@ use File::Basename;
 use Getopt::Long;
 use File::Temp qw(:seekable);
 
+my $output_format = 'wav';
 my $splitdir = $ENV{SPLITDIR};
-my $subdir   = $ENV{SUBDIR};
 my $chunkdir = $ENV{CHUNKDIR};
+my $output_file_naming = $ENV{OUTPUT_FILE_NAMING};
 
 GetOptions(
     'splitdir=s' => \$splitdir,
-    'subdir=s'   => \$subdir,
     'chunkdir=s' => \$chunkdir,
+    'output-format=s' => \$output_format,
+    'output-file-naming=s' => \$output_file_naming,
 );
 
+my $output_template = "%1\$s/chunk%6\$d.%5\$s";
+if ($output_file_naming eq 'chunks') {
+    # OK
+}
+elsif ($output_file_naming eq 'intervals') {
+    $output_template = "%s/%s--from-%07.2f--to-%07.2f.%s";
+}
+elsif (defined $output_file_naming) {
+    die "Unexpected file naming: $output_file_naming";
+}
+
 my ($fn) = @ARGV;
-my ($stem) = fileparse($fn, qw(.mp3 .wav));
+my ($stem) = fileparse($fn, qw(.mp3 .wav .flac));
 my $split_fn = "$splitdir/$stem.txt";
-my $sub_fn = "$subdir/$stem.sub.js";
 
-if (-e $sub_fn) {
-    print STDERR "File exists: $sub_fn\n";
-    exit(1);
-}
-
-if (-e $split_fn) {
-    print STDERR "$split_fn exists\n";
-}
-else {
-    print STDERR "creating $split_fn\n";
-    system(qq(find-audio-splits.pl --splitdir "$splitdir" "$fn"));
+if (not -e $split_fn) {
+    die "no split file $split_fn";
 }
 
 open my $split_fh, '<', $split_fn or die "Couldn't open $split_fn: $!";
@@ -54,13 +57,16 @@ my $chunk_fn;
 
 while (<$split_fh>) {
     chomp;
-    $chunk_fn = "$chunkdir/chunk$i.wav";
+
+    $chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $_, $output_format, $i;
+
     print STDERR "($i) $fn => $chunk_fn $prev .. $_\n";
     system qq{sox "$fn" --channels 1 "$chunk_fn" trim "$prev" "=$_" remix -};
 } continue {
     $prev = $_;
     $i++;
 }
-$chunk_fn = "$chunkdir/chunk$i.wav";
+my $flen = `soxi -D "$fn"`;
+$chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $flen, $output_format, $i;
 print STDERR "($i) $fn => $chunk_fn $prev .. END\n";
 system qq{sox "$fn" --channels 1 "$chunk_fn" "trim" "$prev" remix -};
