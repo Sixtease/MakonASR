@@ -25,7 +25,7 @@ for my $fn (@ARGV) {
             filename => $fn,
             min_silence_sec => 0.4,
             min_signal_sec => 5,
-            threshold_ratio => 0.8,
+            threshold_ratio => $threshold,
         );
         {
             local *STDOUT;
