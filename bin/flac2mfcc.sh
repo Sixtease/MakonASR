@@ -43,6 +43,7 @@ ls "$indir/"$wildcard | while read s; do
     echo `date '+%T'` $stem >&2
     tmp="$tempdir/$stem.wav"
     outfile="$outdir/$stem.mfcc"
+    if [ -e "$outfile" ]; then echo file exists $outfile; continue; fi
     sox "$infile" "$tmp" remix - rate -v 16k && \
     HCopy -C "$C" "$tmp" "$outfile" && \
     rm "$tmp"
