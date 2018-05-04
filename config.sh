@@ -68,3 +68,4 @@ export MAKONFM_TEST_END_POS=660     # up to minute 11 (10 minutes total per trac
 export MAKONFM_PHONE_MAP="$ASR_ROOT/DATA/phone-map" # phone substitutions to avoid infrequent phones
 
 . "${EV_homedir}config.sh"
+if [ -e config_local.sh ]; then . config_local.sh; fi
