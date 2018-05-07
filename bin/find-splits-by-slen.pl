@@ -8,7 +8,7 @@ use open qw(:std :utf8);
 use JSON::XS qw(decode_json);
 use Encode qw(encode_utf8);
 
-if (@ARGV !== 1) {
+if (@ARGV != 1) {
     die "Usage: $0 file.sub.js";
 }
 
@@ -52,12 +52,12 @@ for my $i (0 .. $maxi - 1) {
 $sils[ 0]{l} = { mid => 0 };
 $sils[-1]{r} = { mid => $file_end };
 
-@sils = sort {$a->{len} <=> $b->{len}} @sils;
+my @to_filter = sort {$a->{len} <=> $b->{len}} @sils;
 
-my @kept;
-for my $sil (@sils) {
+my @filtered;
+for my $sil (@to_filter) {
     if ($sil->{r}{mid} - $sil->{l}{mid} > 60) {
-        push @kept, $sil;
+        push @filtered, $sil;
     }
     else {
         $sil->{l}{r} = $sil->{r};
@@ -65,6 +65,20 @@ for my $sil (@sils) {
     }
 }
 
-for my $point (sort {$a <=> $b} map $_->{mid}, @kept) {
+@to_filter = @filtered;
+@filtered = ();
+for my $sil (@to_filter) {
+    if ($sil->{mid} - $sil->{l}{mid} < 30 or
+        $sil->{r}{mid} - $sil->{mid} < 30
+    ) {
+        $sil->{l}{r} = $sil->{r};
+        $sil->{r}{l} = $sil->{l};
+    }
+    else {
+        push @filtered, $sil;
+    }
+}
+
+for my $point (sort {$a <=> $b} map $_->{mid}, @filtered) {
     printf "%.2f\n", $point + 0.0001;
 }
