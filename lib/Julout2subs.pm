@@ -4,10 +4,9 @@ use strict;
 use utf8;
 use Encode qw(decode);
 use Evadevi::Util qw(get_filehandle);
-use JSON::XS qw(encode_json);
+use Subs qw(encode_subs);
 
 my $enc = $ENV{EV_encoding};
-my $json = JSON::XS->new->pretty(1)->space_before(0);
 
 sub parse {
     my ($fh, $splits) = @_;
@@ -111,14 +110,6 @@ sub parse {
     return \@rv
 }
 
-sub json_start {
-    my ($stem) = @_;
-    return qq/jsonp_subtitles({ "filestem": "$stem", "data": /
-}
-sub json_end {
-    return "\n});\n"
-}
-
 sub convert {
     my ($fh, $splits_file, $stem) = @_;
     my $splits_fh = get_filehandle($splits_file);
@@ -127,7 +118,7 @@ sub convert {
         /([\d.]+)\s*\.\./ and push @splits, $1;
     }
     my $subs = parse($fh, \@splits);
-    return json_start($stem) . $json->encode($subs) . json_end();
+    return encode_subs($subs, $stem);
 }
 
 1
