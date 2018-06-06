@@ -26,15 +26,23 @@ if (not $subs) {
 
 my @sils;
 my $sub;
+my $max_sub = $#{$subs->{data}};
 
 SUB:
-for my $i (0 .. $#{$subs->{data}}) {
+for my $i (0 .. $max_sub) {
     $sub = $subs->{data}[$i];
     my $len = $sub->{slen} || 0; # silence length
     my $start = $sub->{sstart}; # silence start
     next SUB if not defined $start;
     my $mid = $start + $len / 2;
-    warn "long silence (stem: $subs->{filestem}, start: $start, length: $len)" if $len > 30;
+    if ($len > 30) {
+        if ($i == $max_sub) {
+            warn "trailing long silence (stem: $subs->{filestem}, start: $start)";
+        }
+        else {
+            warn "long silence (stem: $subs->{filestem}, start: $start, length: $len)";
+        }
+    }
     push @sils, {
         len => $len,
         mid => $mid,
