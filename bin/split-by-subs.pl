@@ -5,6 +5,7 @@ use warnings;
 use utf8;
 use open qw(:std :utf8);
 use JSON::XS qw(decode_json);
+use Subs qw(decode_subs);
 
 my $sent_no = '00000';
 my $is_sent_end = 0;
@@ -12,12 +13,7 @@ my $last_sent_start;
 
 SUBFILE:
 for my $fn (@ARGV) {
-    my $json = do { local (@ARGV, $/) = $fn; <> };
-    $json =~ s/^[^{]+//;
-    $json =~ s/[^}]+$//;
-    
-    undef $@;
-    my $subs = eval { decode_json($json) };
+    my $subs = eval { decode_subs($fn) };
     if (not $subs) {
         warn "JSON parse failed: $@";
         next SUBFILE;
