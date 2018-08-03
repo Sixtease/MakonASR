@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use utf8;
-use File::Basename;
+use File::Basename qw(basename fileparse);
 use Getopt::Long;
 use File::Temp qw(:seekable);
 
@@ -31,14 +31,21 @@ elsif (defined $output_file_naming) {
 }
 
 my ($fn) = @ARGV;
+my $orig_fn = $fn;
+my $basefn = basename $fn;
 my ($stem) = fileparse($fn, qw(.mp3 .wav .flac));
 my $split_fn = "$splitdir/$stem.txt";
 
-if (not -e $split_fn) {
-    die "no split file $split_fn";
+my $split_fh;
+if (-e $split_fn) {
+    say STDERR "found splits for $stem";
+    open $split_fh, '<', $split_fn or die "Couldn't open $split_fn: $!";
 }
-
-open my $split_fh, '<', $split_fn or die "Couldn't open $split_fn: $!";
+else {
+    say STDERR "generating splits for $stem";
+    my $split_filecontents = join "", map "$_\n", map 100*$_, 1 .. `soxi -D "$fn"`/100;
+    open $split_fh, '<', \$split_filecontents or die "Couldn't open generated splits for $stem: $!";
+}
 
 if ($fn =~ /\.mp3$/) {
     my $tmp = File::Temp->new(SUFFIX => '.wav');
@@ -60,13 +67,13 @@ while (<$split_fh>) {
 
     $chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $_, $output_format, $i;
 
-    print STDERR "($i) $fn => $chunk_fn $prev .. $_\n";
+    print STDERR "($i) $basefn => $chunk_fn $prev .. $_\n";
     system qq{sox "$fn" --channels 1 "$chunk_fn" trim "$prev" "=$_" remix -};
 } continue {
     $prev = $_;
     $i++;
 }
-my $flen = `soxi -D "$fn"`;
+my $flen = `soxi -D "$orig_fn"`;
 $chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $flen, $output_format, $i;
-print STDERR "($i) $fn => $chunk_fn $prev .. END\n";
+print STDERR "($i) $basefn => $chunk_fn $prev .. END\n";
 system qq{sox "$fn" --channels 1 "$chunk_fn" "trim" "$prev" remix -};
