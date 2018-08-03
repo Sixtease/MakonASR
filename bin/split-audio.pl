@@ -30,50 +30,52 @@ elsif (defined $output_file_naming) {
     die "Unexpected file naming: $output_file_naming";
 }
 
-my ($fn) = @ARGV;
-my $orig_fn = $fn;
-my $basefn = basename $fn;
-my ($stem) = fileparse($fn, qw(.mp3 .wav .flac));
-my $split_fn = "$splitdir/$stem.txt";
+for my $fn (@ARGV) {
+    my $orig_fn = $fn;
+    my $basefn = basename $fn;
+    print STDERR "\n>>> $basefn \n";
+    my ($stem) = fileparse($fn, qw(.mp3 .wav .flac));
+    my $split_fn = "$splitdir/$stem.txt";
 
-my $split_fh;
-if (-e $split_fn) {
-    say STDERR "found splits for $stem";
-    open $split_fh, '<', $split_fn or die "Couldn't open $split_fn: $!";
-}
-else {
-    say STDERR "generating splits for $stem";
-    my $split_filecontents = join "", map "$_\n", map 100*$_, 1 .. `soxi -D "$fn"`/100;
-    open $split_fh, '<', \$split_filecontents or die "Couldn't open generated splits for $stem: $!";
-}
-
-if ($fn =~ /\.mp3$/) {
-    my $tmp = File::Temp->new(SUFFIX => '.wav');
-    open my $lame_fh, '-|', qq{lame --decode "$fn" -} or die "couldn't start lame: $!";
-    {
-        local $/;
-        print {$tmp} <$lame_fh>;
+    my $split_fh;
+    if (-e $split_fn) {
+        say STDERR "found splits for $stem";
+        open $split_fh, '<', $split_fn or die "Couldn't open $split_fn: $!";
     }
-    $tmp->seek(0, SEEK_SET);
-    $fn = $tmp;
+    else {
+        say STDERR "generating splits for $stem";
+        my $split_filecontents = join "", map "$_\n", map 100*$_, 1 .. `soxi -D "$fn"`/100;
+        open $split_fh, '<', \$split_filecontents or die "Couldn't open generated splits for $stem: $!";
+    }
+
+    if ($fn =~ /\.mp3$/) {
+        my $tmp = File::Temp->new(SUFFIX => '.wav');
+        open my $lame_fh, '-|', qq{lame --decode "$fn" -} or die "couldn't start lame: $!";
+        {
+            local $/;
+            print {$tmp} <$lame_fh>;
+        }
+        $tmp->seek(0, SEEK_SET);
+        $fn = $tmp;
+    }
+
+    my $prev = 0;
+    my $i = '000';
+    my $chunk_fn;
+
+    while (<$split_fh>) {
+        chomp;
+
+        $chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $_, $output_format, $i;
+
+        print STDERR "($i) $basefn => $chunk_fn $prev .. $_\n";
+        system qq{sox "$fn" --channels 1 "$chunk_fn" trim "$prev" "=$_" remix -};
+    } continue {
+        $prev = $_;
+        $i++;
+    }
+    my $flen = `soxi -D "$orig_fn"`;
+    $chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $flen, $output_format, $i;
+    print STDERR "($i) $basefn => $chunk_fn $prev .. END\n";
+    system qq{sox "$fn" --channels 1 "$chunk_fn" "trim" "$prev" remix -};
 }
-
-my $prev = 0;
-my $i = '000';
-my $chunk_fn;
-
-while (<$split_fh>) {
-    chomp;
-
-    $chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $_, $output_format, $i;
-
-    print STDERR "($i) $basefn => $chunk_fn $prev .. $_\n";
-    system qq{sox "$fn" --channels 1 "$chunk_fn" trim "$prev" "=$_" remix -};
-} continue {
-    $prev = $_;
-    $i++;
-}
-my $flen = `soxi -D "$orig_fn"`;
-$chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $flen, $output_format, $i;
-print STDERR "($i) $basefn => $chunk_fn $prev .. END\n";
-system qq{sox "$fn" --channels 1 "$chunk_fn" "trim" "$prev" remix -};
