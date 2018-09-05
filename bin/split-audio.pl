@@ -66,13 +66,23 @@ for my $fn (@ARGV) {
     while (<$split_fh>) {
         chomp;
 
-        $chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $_, $output_format, $i;
+        my $curr = $_;
+        my $should_redo = 0;
 
-        print STDERR "($i) $basefn => $chunk_fn $prev .. $_\n";
-        system qq{sox "$fn" --channels 1 "$chunk_fn" trim "$prev" "=$_" remix -};
-    } continue {
-        $prev = $_;
+        if (($curr - $prev) > 120) {
+            $curr = $prev + 120;
+            $should_redo = 1;
+        }
+
+        $chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $curr, $output_format, $i;
+
+        print STDERR "($i) $basefn => $chunk_fn $prev .. $curr\n";
+        system qq{sox "$fn" --channels 1 "$chunk_fn" trim "$prev" "=$curr" remix -};
+
+        $prev = $curr;
         $i++;
+
+        redo if $should_redo;
     }
     my $flen = `soxi -D "$orig_fn"`;
     $chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $flen, $output_format, $i;
