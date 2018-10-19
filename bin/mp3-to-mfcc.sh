@@ -9,7 +9,7 @@ usage() {
 
 outdir='.'
 tempdir='/tmp'
-C=~/git/Evadevi/resources/htk-config-wav2mfcc
+C=${EV_homedir}resources/htk-config-wav2mfcc
 
 while getopts 'i:o:C:t:' OPTION; do
     case "$OPTION" in
