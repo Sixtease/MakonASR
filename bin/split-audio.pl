@@ -59,6 +59,7 @@ for my $fn (@ARGV) {
         $fn = $tmp;
     }
 
+    my $flen = `soxi -D "$orig_fn"`;
     my $prev = 0;
     my $i = '000';
     my $chunk_fn;
@@ -68,6 +69,8 @@ for my $fn (@ARGV) {
 
         my $curr = $_;
         my $should_redo = 0;
+
+        last if $curr >= $flen;
 
         if (($curr - $prev) > 120) {
             $curr = $prev + 120;
@@ -84,7 +87,6 @@ for my $fn (@ARGV) {
 
         redo if $should_redo;
     }
-    my $flen = `soxi -D "$orig_fn"`;
     $chunk_fn = sprintf $output_template, $chunkdir, $stem, $prev, $flen, $output_format, $i;
     print STDERR "($i) $basefn => $chunk_fn $prev .. END\n";
     system qq{sox "$fn" --channels 1 "$chunk_fn" "trim" "$prev" remix -};
