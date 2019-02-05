@@ -6,7 +6,7 @@ wd="$EV_workdir"
 DEST_LM="${DEST_LM:-$ASR_ROOT/DATA/LM}"
 DEST_WL="${DEST_WL:-$ASR_ROOT/DATA/wordlist}"
 mwl="$wd/merged-wordlist"
-c0="DATA/cnkcorpus"
+c0="${general_corpus:-DATA/cnkcorpus}"
 c1="$EV_corpus"
 c2="$wd/sublm-corpus"
 c3="$wd/humsublm-corpus"
@@ -17,10 +17,10 @@ export LM_nonhumanic_only=1
 get_humanic_subs.pl "$MAKONFM_SUB_DIR"/*.sub.js | sublm-mkdict-mkcorpus.pl "$wd/sublm-wordlist" "$c2"
 unset LM_nonhumanic_only
 unset MAKONFM_SKIP_TEST_SUBS
-corpus2wordlist.pl < "$c0" > "$wd/cnk-wordlist"
+corpus2wordlist.pl < "$c0" > "$wd/gen-wordlist"
 corpus2wordlist.pl < "$c1" > "$wd/txt-wordlist"
 merge-wordlists.pl 65000 "$wd/humsublm-wordlist" "$wd/sublm-wordlist" "$wd/txt-wordlist" > "$mwl"
-merge-wordlists.pl infinity "$wd/humsublm-wordlist" "$wd/sublm-wordlist" "$wd/txt-wordlist" "$wd/cnk-wordlist" > "$mwl-unlimited"
+merge-wordlists.pl infinity "$wd/humsublm-wordlist" "$wd/sublm-wordlist" "$wd/txt-wordlist" "$wd/gen-wordlist" > "$mwl-unlimited"
 
 reverse-corpus.pl < "$c0" > "$c0"b
 reverse-corpus.pl < "$c1" > "$c1"b
@@ -53,4 +53,4 @@ ngram -order 3 -lm "$wd/lm0"b.arpa -lambda 0.0001 -mix-lm "$wd/lm1"b.arpa -mix-l
 
 vyslov.pl < "$mwl" > "$DEST_WL/wl-test-phonet"
 
-#rm "$wd"/{cnk,txt,sublm,humsublm}-wordlist "$c2" "$c3" "$mwl" "$mwl-unlimited" "$c0"b "$c1"b "$c2"b "$c3"b "$wd"/kn{0..3}{f,b}{1,2} "$wd"/lm{0..3}{,b}.arpa
+#rm "$wd"/{gen,txt,sublm,humsublm}-wordlist "$c2" "$c3" "$mwl" "$mwl-unlimited" "$c0"b "$c1"b "$c2"b "$c3"b "$wd"/kn{0..3}{f,b}{1,2} "$wd"/lm{0..3}{,b}.arpa
