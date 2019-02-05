@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export ASR_ROOT=~/skola/phd/asr
+export ASR_ROOT="`dirname "$0"`"
 
 export PATH="$ASR_ROOT/bin:/home/sixtease/git/Evadevi/bin:/home/sixtease/programs/lmhtk/bin:/home/sixtease/share/install/srilm/srilm-1.7.2/bin/i686-m64:/home/sixtease/share/install/srilm/srilm-1.7.2/bin:$PATH"
 
