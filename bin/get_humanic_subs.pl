@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 use strict;
 use warnings;
@@ -45,7 +45,7 @@ for my $fn (@ARGV) {
     }
     $json =~ s/^[^{]+//;
     $json =~ s/[^}]+$//;
-    
+
     undef $@;
     my $subs = eval { JSON::XS->new->decode($json) };
     if (not $subs) {
@@ -54,7 +54,7 @@ for my $fn (@ARGV) {
     }
 
     my $skip = $SKIP_STEM{$subs->{filestem}} || 0;
-    
+
     # pad end with a fake non-humanic subtitle
     my $end_pad = { timestamp => 9999.99, occurrence => '' };
     if ($ENV{LM_nonhumanic_only}) {
@@ -62,7 +62,7 @@ for my $fn (@ARGV) {
     }
     push @{ $subs->{data} }, $end_pad;
     my $last_sub = {is_sent_end => 0, occurrence => ''};
-    
+
     SUB:
     while (my ($i, $sub) = each (@{ $subs->{data} })) {
         my $is_humanic;
@@ -95,7 +95,7 @@ for my $fn (@ARGV) {
             $sent_no++;
             next SUB
         }
-        
+
         if ($for_lm) {
             if ($blacklist{ uc($sub->{wordform}) }) {
                 next SUB
@@ -111,7 +111,7 @@ for my $fn (@ARGV) {
                 }
             }
         }
-        
+
         print ' ', $sub->{wordform};
     } continue {
         $last_sub = $sub;
@@ -135,21 +135,21 @@ sub sentence_boundary {
     if ($was_sent_end and $sub->{occurrence} =~ /^\W*[[:upper:]]/) {
         return 1
     }
-    
+
     if ($sub->{occurrence} =~ /^ \s* \. \s* [[:upper:]]/x) {
         return 1
     }
-    
+
     my $t = $sub->{timestamp} - $last_sent_start->{timestamp};
 
     if ($was_sent_end and $last_sent_start and $t > 10) {
         return 1
     }
-    
+
     if ($last_sub->{occurrence} =~ /[,;]\W*$/ and $t > 15) {
         return 1
     }
-    
+
     if ($t > 60) {
         return 1
     }

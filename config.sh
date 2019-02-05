@@ -20,7 +20,7 @@ export EV_LMf="$ASR_ROOT/DATA/LM/tg.arpa"
 export EV_LMb="$ASR_ROOT/DATA/LM/tgb.arpa"
 export EV_wordlist_test_phonet="$ASR_ROOT/DATA/wordlist/wl-test-phonet"
 export EV_tree_hed="$ASR_ROOT/DATA/tree.hed"
-export EV_triphone_tree="$ASR_ROOT/DATA/triphone-tree"
+export EV_triphone_questions="$ASR_ROOT/DATA/triphone-questions"
 
 export EV_test_transcription="$ASR_ROOT/DATA/transcription/test.mlf"
 export EV_test_mfcc="$EV_train_mfcc"
