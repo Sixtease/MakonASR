@@ -7,6 +7,6 @@ use utf8;
 use open qw(:std :utf8);
 
 while (<>) {
-    s/[^[:alpha:][:blank:]]//g;
+    s/[^[:alpha:][:space:]]//g;
     print;
 }
