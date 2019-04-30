@@ -19,6 +19,7 @@ export EV_LM="$ASR_ROOT/DATA/LM/bg.lat"
 export EV_LMf="$ASR_ROOT/DATA/LM/tg.arpa"
 export EV_LMb="$ASR_ROOT/DATA/LM/tgb.arpa"
 export EV_wordlist_test_phonet="$ASR_ROOT/DATA/wordlist/wl-test-phonet"
+export EV_triphone_tree="$ASR_ROOT/DATA/triphone-tree"
 export EV_tree_hed="$ASR_ROOT/DATA/tree.hed"
 export EV_triphone_questions="$ASR_ROOT/DATA/triphone-questions"
 
