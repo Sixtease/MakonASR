@@ -26,7 +26,7 @@ for my $fn (@ARGV) {
         $mfcc_fn = $ENV{MFCCDIR} . '/' . $stem . '.mfcc';
         die "mfcc file '$mfcc_fn' des not exist" if not -e $mfcc_fn;
     }
-    my $header = mfcc_header($fn);
+    my $header = mfcc_header($mfcc_fn);
     my $total_length = $header->{length};
     my $chunks_cnt = int($total_length / $chunk_length);
     if ($chunks_cnt > 1 and $total_length % $chunk_length < ($chunk_length / 2)) {
