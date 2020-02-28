@@ -10,7 +10,7 @@ export EV_outdir="$ASR_ROOT/hmms/"
 
 export PERL5LIB="${EV_homedir}lib:$ASR_ROOT/lib:$PERL5LIB"
 
-export EV_encoding='iso-8859-2'
+export EV_encoding='ISO-8859-2'
 
 export EV_train_mfcc="$ASR_ROOT/DATA/mfcc"
 export EV_wordlist_train_phonet="$ASR_ROOT/DATA/wordlist/wl-train-phonet"
@@ -61,6 +61,7 @@ export SUB_EXTRACTION_LOG="$TEMPDIR/sub_extraction_log"
 export MAKONFM_SUB_DIR='/home/sixtease/dokumenty/skola/phd/webapp/MakonFM/root/static/subs'
 export MAKONFM_MFCC_DIR='/home/sixtease/kroupy/Music/Makon/mfcc'
 export MAKONFM_MP3_DIR='/home/sixtease/kroupy/Music/Makon/all/mp3'
+export MAKONFM_FLAC_DIR='/home/sixtease/kroupy/Music/Makon/all/flac'
 
 export MAKONFM_TEST_TRACKS="76-05B-Kaly-10:82-01A:kotouc-S01-c:86-05A-Brno-9.2.1986-3:90-45A"
 export MAKONFM_TEST_START_POS=60    # take testing data from 1 minute into the track

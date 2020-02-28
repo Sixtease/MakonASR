@@ -37,7 +37,7 @@ for my $sub_fn (@sub_fns) {
     $sent_no = 0;
     
     for my $sub (@{ $subs->{data} }) {
-        if ($sub->{cmscore} >= $cm_threshold) {
+        if ($sub->{cmscore} and $sub->{cmscore} >= $cm_threshold) {
             if (@phones == 0) {
                 $chunk_start = $sub->{timestamp};
             }
@@ -64,6 +64,7 @@ sub process_chunk {
     if (@flat_phones < $cm_minphones) {
         return;
     }
+    $flat_phones[-1] =~ s/sp$/sil/;
     print "$stem $chunk_start .. $chunk_end: @flat_phones\n";
 }
 
