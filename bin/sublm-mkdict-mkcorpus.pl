@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use utf8;
+use 5.010;
 use Encode qw(decode_utf8 encode);
 
 my $enc = $ENV{EV_encoding};
@@ -21,7 +22,7 @@ my %dict;
         my $line_uc = uc $line;
         my @words = split /\s+/, $line_uc;
         $dict{$_}++ for @words;
-        print {$corpus_fh} encode($enc, "<s> $line_uc </s>\n");
+        say {$corpus_fh} encode($enc, $line_uc);
     }
 }
 

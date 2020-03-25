@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export ASR_ROOT=~/skola/phd/asr
+export ASR_ROOT="`dirname "$BASH_SOURCE"`"
 
 export PATH="$ASR_ROOT/bin:/home/sixtease/git/Evadevi/bin:/home/sixtease/programs/lmhtk/bin:/home/sixtease/share/install/srilm/srilm-1.7.2/bin/i686-m64:/home/sixtease/share/install/srilm/srilm-1.7.2/bin:$PATH"
 
@@ -10,7 +10,7 @@ export EV_outdir="$ASR_ROOT/hmms/"
 
 export PERL5LIB="${EV_homedir}lib:$ASR_ROOT/lib:$PERL5LIB"
 
-export EV_encoding='iso-8859-2'
+export EV_encoding='ISO-8859-2'
 
 export EV_train_mfcc="$ASR_ROOT/DATA/mfcc"
 export EV_wordlist_train_phonet="$ASR_ROOT/DATA/wordlist/wl-train-phonet"
@@ -19,6 +19,7 @@ export EV_LM="$ASR_ROOT/DATA/LM/bg.lat"
 export EV_LMf="$ASR_ROOT/DATA/LM/tg.arpa"
 export EV_LMb="$ASR_ROOT/DATA/LM/tgb.arpa"
 export EV_wordlist_test_phonet="$ASR_ROOT/DATA/wordlist/wl-test-phonet"
+export EV_triphone_tree="$ASR_ROOT/DATA/triphone-tree"
 export EV_tree_hed="$ASR_ROOT/DATA/tree.hed"
 export EV_triphone_questions="$ASR_ROOT/DATA/triphone-questions"
 
@@ -60,6 +61,7 @@ export SUB_EXTRACTION_LOG="$TEMPDIR/sub_extraction_log"
 export MAKONFM_SUB_DIR='/home/sixtease/dokumenty/skola/phd/webapp/MakonFM/root/static/subs'
 export MAKONFM_MFCC_DIR='/home/sixtease/kroupy/Music/Makon/mfcc'
 export MAKONFM_MP3_DIR='/home/sixtease/kroupy/Music/Makon/all/mp3'
+export MAKONFM_FLAC_DIR='/home/sixtease/kroupy/Music/Makon/all/flac'
 
 export MAKONFM_TEST_TRACKS="76-05B-Kaly-10:82-01A:kotouc-S01-c:86-05A-Brno-9.2.1986-3:90-45A"
 export MAKONFM_TEST_START_POS=60    # take testing data from 1 minute into the track
@@ -68,4 +70,4 @@ export MAKONFM_TEST_END_POS=660     # up to minute 11 (10 minutes total per trac
 export MAKONFM_PHONE_MAP="$ASR_ROOT/DATA/phone-map" # phone substitutions to avoid infrequent phones
 
 . "${EV_homedir}config.sh"
-if [ -e config_local.sh ]; then . config_local.sh; fi
+if [ -e "$ASR_ROOT/config_local.sh" ]; then . "$ASR_ROOT/config_local.sh"; fi

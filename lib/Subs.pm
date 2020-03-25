@@ -4,6 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 use utf8;
+use Encode qw(decode_utf8);
 use Exporter qw(import);
 use JSON::XS qw(decode_json encode_json);
 
@@ -26,7 +27,7 @@ sub encode_subs {
 }
 
 sub decode_subs {
-    my ($subs_arg) = @_;
+    my ($subs_arg, %opt) = @_;
     my $subs_fh;
     my $json;
     if (ref $subs_arg eq 'GLOB' or ref(\$subs_arg) eq 'GLOB') {
@@ -38,14 +39,20 @@ sub decode_subs {
     else {
         open $subs_fh, '<', $subs_arg or die "Couldn't open subs $subs_arg for reading: $!";
     }
-    $json ||= join('', <$subs_fh>);
-    
+    my $jsonp ||= join('', <$subs_fh>);
+
+    $json = $jsonp;
     $json =~ s/^[^{]+//;
     $json =~ s/[^}]+$//;
 
     undef $@;
     my $subs = decode_json($json);
-    return $subs;
+    if ($opt{include_jsonp}) {
+        return ($subs, decode_utf8($jsonp));
+    }
+    else {
+        return $subs;
+    }
 }
 
 42;

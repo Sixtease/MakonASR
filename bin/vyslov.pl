@@ -24,7 +24,8 @@ if ($out_fn) {
 
 LINE:
 while (<>) {
-    for (decode($enc, $_)) {
+    my $undecoded = $_;
+    for (decode($enc, $undecoded)) {
         chomp;
         my $writ = $_;
         if (/[^\w\s]/) {
@@ -32,7 +33,7 @@ while (<>) {
             next
         }
         my $out = '';
-        if (my @spec = specialcase()) {
+        if (my @spec = specialcase(encode_utf8($_))) {
             for my $pron (@spec) {
                 $out .= $writ . (' ' x 7) . $pron . "\n";
             }
@@ -57,7 +58,8 @@ while (<>) {
 
 sub specialcase {
     return if not $dbh;
-    my $ref = $dbh->selectcol_arrayref('SELECT pron FROM dict WHERE form=?', {}, $_);
+    my $thing = shift;
+    my $ref = $dbh->selectcol_arrayref('SELECT pron FROM dict WHERE form=?', {}, $thing);
     return @$ref
 }
 

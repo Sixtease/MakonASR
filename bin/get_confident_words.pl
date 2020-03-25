@@ -51,7 +51,7 @@ for my $recout_fn (@recout_fns) {
             s/^cmscore1:\s*//;
             @cmscores = split / /;
         }
-        if (/=== begin forced alignment ===/) {
+        if (/-- word alignment --/) {
             $in_wa = 1;
             @starts = @ends = ();
         }
