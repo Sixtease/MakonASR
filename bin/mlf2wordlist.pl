@@ -16,4 +16,5 @@ while (<>) {
     $words{$_}++;
 }
 
+print "<s>\n</s>\n";
 print "$_\n" for sort {$words{$b} <=> $words{$a}} keys %words;
