@@ -28,8 +28,11 @@ sub parse {
             $i = 0;
             #%word2phone_cnt = ();
             @phone_num_to_word = ();
-            $offset = shift @$splits;
+            $offset = shift @$splits if $splits;
         };
+        if (/input MFCC file:.*--from-([\d\.]+)/ and not $splits) {
+            $offset = $1;
+        }
         if (/-- phoneme alignment --/) {
             $in_pa = 1;
             $j = 0;
@@ -111,11 +114,16 @@ sub parse {
 }
 
 sub convert {
-    my ($fh, $splits_file, $stem) = @_;
-    my $splits_fh = get_filehandle($splits_file);
+    my ($fh, $splits_src, $stem) = @_;
     my @splits;
-    while (<$splits_fh>) {
-        /([\d.]+)\s*\.\./ and push @splits, $1;
+    if (ref $splits_src eq 'ARRAY') {
+        @splits = @$splits_src;
+    }
+    else {
+        my $splits_fh = get_filehandle($splits_src);
+        while (<$splits_fh>) {
+            /([\d.]+)\s*\.\./ and push @splits, $1;
+        }
     }
     my $subs = parse($fh, \@splits);
     return encode_subs($subs, $stem);
