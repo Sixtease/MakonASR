@@ -1,0 +1,35 @@
+Reproduction of experiment by \cite{psutka2003large}
+
+Needs:
+1. representative corpus (makon-corpus-utf8)
+2. general corpus (wmt-corpus-utf8)
+
+Steps:
+
+1. create 2 unigram language models; one representative (makon)
+  and one general (wmt):
+
+  $ lmplz -o 1 --text   wmt-corpus-utf8 -arpa   wmt-lm1.arpa
+  $ lmplz -o 1 --text makon-corpus-utf8 -arpa makon-lm1.arpa
+
+2. score the sentences in the general corpus by the two LMs:
+  $ perl bin/get-sent-likelihoods.pl makon-lm1.arpa wmt-lm1.arpa < wmt-corpus-utf8 > scored-corpora/wmt-corpus-scored-makon-wmt
+  $ perl bin/get-sent-likelihoods.pl makon-lm1.arpa              < wmt-corpus-utf8 > scored-corpora/wmt-corpus-scored-makon
+
+3. filter the general corpus by desired criteria:
+  $ perl bin/get-filtered-corpus.pl -3.2 scored-corpora/wmt-corpus-scored > filtered-corpora/wmt-corpus-lh-3.2
+  $ perl bin/get-filtered-corpus.pl -2.8 scored-corpora/wmt-corpus-scored > filtered-corpora/wmt-corpus-lh-2.8
+  $ perl bin/get-filtered-corpus2.pl 0.8 scored-corpora/wmt-corpus-scored-makon-wmt > filtered-corpora/wmt-corpus-wmt-lt-0.8-makon-abs-4
+
+  abs-4 denotes threshold log likelihood by the representative LM for inclusion
+  it is set as constant in the bin/get-filtered-corpus2.pl script
+
+4. concatenate the filtered corpus with the representative one
+  $ cat wmt-corpus-utf8 filtered-corpora/wmt-corpus-lh-3.2 > catenated-corpora/wmt-corpus-lh-3.2
+
+5. build LM based on the concatenated corpus
+  $ lmplz -o 5 --prune 0 0 1 --text catenated-corpora/wmt-corpus-lh-3.2 --arpa lms/wmt-corpus-lh-3.2.arpa
+  $ build_binary lms/wmt-corpus-lh-3.2.arpa lms/wmt-corpus-lh-3.2.nmap
+  $ generate_trie alphabet.txt lms/wmt-corpus-lh-3.2.nmap lms/wmt-corpus-lh-3.2.trie
+
+  the alphabet must be the same that will later be used at testing
